@@ -10,6 +10,11 @@ dotenv.config();
 const app = express();
 const port =  process.env.PORT || 5000;
 
+app.get("/", (req,res) => {
+    res.send("hello form shatova")
+});
+
+
 app.use(cors());
 app.use(express.json());
 app.use("/api/shatova/V1/",auth_router);

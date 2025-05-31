@@ -9,6 +9,9 @@ import { getDashboard } from "../controller/dashboard.controller.js";
 router.get("/users",authenticateToken, getAllUsers);
 router.get("/dashboard",authenticateToken,getDashboard)
 router.post("/admin",authenticateToken, CreateAdmin)
+router.get("/", (req,res) => {
+    res.send("hello form shatova")
+});
 
 
 
