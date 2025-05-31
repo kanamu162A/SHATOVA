@@ -11,7 +11,10 @@ const app = express();
 const port =  process.env.PORT || 5000;
 
 app.get("/", (req,res) => {
-    res.send("hello form shatova")
+    res.status(200).json({
+        success:true,
+        message:"welcome to shatova  uncle fadeel...."
+    })
 });
 
 
