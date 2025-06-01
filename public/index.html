@@ -1,53 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shatova</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #0f0c29;
-      background: ;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .logo {
-      font-size: 4rem;
-      font-weight: bold;
-      background: linear-gradient(to right, #00f2fe, #4facfe);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: pulse 2s infinite;
-    }
-
-    .tagline {
-      font-size: 1.2rem;
-      margin-top: 10px;
-      color: #ccc;
-    }
-
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.05);
-        opacity: 0.8;
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | Shatova</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="logo"><b>Shatova</div></b>
-  <div class="tagline">Always  aisha.</div>
-  <div class="tagline">Powering connections. Simplifying life.</div>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h2 class="text-1xl font-bold text-blue-700 text-center mb-6">Create Account</h2>
+    <form id="registerForm" class="space-y-4">
+      <input id="first_name" type="text" placeholder="First Name" class="w-full border px-4 py-2 rounded" required />
+      <input id="last_name" type="text" placeholder="Last Name" class="w-full border px-4 py-2 rounded" required />
+      <input id="phone" type="tel" placeholder="Phone" class="w-full border px-4 py-2 rounded" required />
+      <input id="email" type="email" placeholder="Email" class="w-full border px-4 py-2 rounded" required />
+      <input id="password" type="password" placeholder="Password" class="w-full border px-4 py-2 rounded" required />
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Register</button>
+    </form>
+    <p id="responseMsg" class="mt-4 text-center text-sm"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("registerForm");
+    const responseMsg = document.getElementById("responseMsg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = {
+        first_name: document.getElementById("first_name").value,
+        last_name: document.getElementById("last_name").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+      };
+
+      try {
+        const res = await fetch("https://shatova.onrender.com/api/shatova/V1/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        responseMsg.textContent = result.message;
+        responseMsg.className = result.success
+          ? "text-green-600 mt-4 text-center"
+          : "text-red-600 mt-4 text-center";
+
+        if (result.success) form.reset();
+      } catch (error) {
+        responseMsg.textContent = "Something went wrong. Please try again.";
+        responseMsg.className = "text-red-600 mt-4 text-center";
+      }
+    });
+  </script>
+
 </body>
 </html>
