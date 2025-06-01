@@ -35,7 +35,7 @@ export const CreateAdmin = async(req,res) =>{
                 success:false,
                 message:"Already has admin role...."
 
-            });
+            })
         };
 
         const hashedPassword = await bcrypt.hash(pin_code, 10)
