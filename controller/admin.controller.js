@@ -29,7 +29,7 @@ export const CreateAdmin = async(req,res) =>{
 
         const user = checkUserResult.rows[0];
 
-        if(user.role === 'ADMIN'||'C E O'){
+        if(user.role === 'ADMIN'|| user.role === 'C E O'){
 
             return res.status(403).json({
                 success:false,

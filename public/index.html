@@ -2,80 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register | Shatova</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Playfair+Display&display=swap" rel="stylesheet">
   <style>
     body {
+      margin: 0;
       font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #76a4dd, #ebe8e8, #011225);
+      color: #2d3748;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    h1, .brand {
+
+    .brand {
       font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00010f;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-container {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 320px;
+      border: 3px solid #e2e8f0;
+      height: 100%;
+    }
+
+    .form-container h2 {
+      font-size: 1.75rem;
+      font-weight: bold;
+      color: #4c51bf;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group input {
+      width: 300px;
+      padding: 0.5rem 1rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.375rem;
+      font-size: 1rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #a3bffa;
+      box-shadow: 0 0 0 3px rgba(160, 174, 255, 0.5);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #07137c;
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #03033d;
+    }
+
+    .text-center {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .text-center a {
+      color: #2b6cb0;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .text-center a:hover {
+      text-decoration: underline;
+    }
+    .h4{
+      color: rgba(0, 0, 0, 0.465);
+      text-align: center;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-blue-100 via-white to-blue-200 text-gray-800 min-h-screen relative overflow-x-hidden">
+<body>
 
-  
-
-  <!-- Transparent Registration Form -->
-  <div class="relative z-10 flex flex-col items-center justify-center min-h-screen p-6">
-    <div class="text-3xl font-bold text-indigo-700 mb-6 brand">Shatova</div>
-    <div class="bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200">
-      <h2 class="text-2xl font-bold text-indigo-700 text-center mb-6">Create Account</h2>
-      <form id="registerForm" class="space-y-4">
-        <input id="first_name" type="text" placeholder="First Name" class="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-300" required />
-        <input id="last_name" type="text" placeholder="Last Name" class="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-300" required />
-        <input id="phone" type="tel" placeholder="Phone" class="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-300" required />
-        <input id="email" type="email" placeholder="Email" class="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-300" required />
-        <input id="password" type="password" placeholder="Password" class="w-full border px-4 py-2 rounded focus:ring-2 focus:ring-indigo-300" required />
-        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">Register</button>
+  <div class="form-wrapper">
+    <div class="brand">Shatova</div>
+    <div class="form-container">
+      <h4 class="h4">Create Account</h4>
+      <form action="/register" method="POST">
+        <div class="form-group">
+          <input type="text" name="first_name" placeholder="First Name" required />
+        </div>
+        <div class="form-group">
+          <input type="text" name="last_name" placeholder="Last Name" required />
+        </div>
+        <div class="form-group">
+          <input type="tel" name="phone" placeholder="Phone" required />
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" placeholder="Email" required />
+        </div>
+        <div class="form-group">
+          <input type="password" name="password" placeholder="Password" required />
+        </div>
+        <button type="submit" class="submit-btn">Register</button>
       </form>
-      <p id="responseMsg" class="mt-4 text-center text-sm"></p>
-      <p class="mt-4 text-center text-gray-600">Already have an account? <a href="#" class="text-blue-600 hover:underline">Login</a></p>
-
+      <p class="text-center">Already have an account? <a href="/login.html">Login</a></p>
     </div>
   </div>
-
-  <script>
-    const form = document.getElementById("registerForm");
-    const responseMsg = document.getElementById("responseMsg");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const data = {
-        first_name: document.getElementById("first_name").value,
-        last_name: document.getElementById("last_name").value,
-        phone: document.getElementById("phone").value,
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value
-      };
-
-      try {
-        const res = await fetch("https://shatova.onrender.com/api/shatova/V1/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-        if (result.success) {
-          form.reset();
-          responseMsg.innerHTML = `<span class="text-green-600">${result.message}</span><br/><a href="/login.html" class="text-indigo-700 font-semibold underline mt-2 inline-block">Go to Login</a>`;
-        } else {
-          responseMsg.textContent = result.message;
-          responseMsg.className = "text-red-600 mt-4 text-center";
-        }
-      } catch (error) {
-        responseMsg.textContent = "Something went wrong. Please try again.";
-        responseMsg.className = "text-red-600 mt-4 text-center";
-      }
-    });
-  </script>
 
 </body>
 </html>
