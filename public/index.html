@@ -129,6 +129,80 @@
       <p class="text-center">Already have an account? <a href="/login.html">Login</a></p>
     </div>
   </div>
+  <script>
 
+    const form = document.getElementById("registerForm");
+
+    const responseMsg = document.getElementById("responseMsg");
+
+
+
+    form.addEventListener("submit", async (e) => {
+
+      e.preventDefault();
+
+
+
+      const data = {
+
+        first_name: document.getElementById("first_name").value,
+
+        last_name: document.getElementById("last_name").value,
+
+        phone: document.getElementById("phone").value,
+
+        email: document.getElementById("email").value,
+
+        password: document.getElementById("password").value
+
+      };
+
+
+
+      try {
+
+        const res = await fetch("https://shatova.onrender.com/api/shatova/V1/register", {
+
+          method: "POST",
+
+          headers: {
+
+            "Content-Type": "application/json"
+
+          },
+
+          body: JSON.stringify(data)
+
+        });
+
+
+
+        const result = await res.json();
+
+        if (result.success) {
+
+          form.reset();
+
+          responseMsg.innerHTML = `<span class="text-green-600">${result.message}</span><br/><a href="/login.html" class="text-indigo-700 font-semibold underline mt-2 inline-block">Go to Login</a>`;
+
+        } else {
+
+          responseMsg.textContent = result.message;
+
+          responseMsg.className = "text-red-600 mt-4 text-center";
+
+        }
+
+      } catch (error) {
+
+        responseMsg.textContent = "Something went wrong. Please try again.";
+
+        responseMsg.className = "text-red-600 mt-4 text-center";
+
+      }
+
+    });
+
+  </script>
 </body>
 </html>
