@@ -2,211 +2,183 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | Shatova</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Playfair+Display&display=swap" rel="stylesheet">
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #e0e7ff, #f0f9ff);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-
-    .dashboard {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(8px);
-      border-radius: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      max-width: 700px;
-      width: 100%;
-      padding: 2rem 2.5rem;
-      animation: fadeIn 1s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: #1e3a8a;
-      margin-bottom: 1rem;
-    }
-
-    .user-info p {
-      font-size: 1rem;
-      margin: 0.5rem 0;
-    }
-
-    .user-info strong {
-      color: #1f2937;
-    }
-
-    .task-section {
-      margin-top: 2rem;
-    }
-
-    .task-section h2 {
-      font-size: 1.25rem;
+      background: linear-gradient(135deg, #e0f2fe, #f8fafc);
       color: #111827;
-      margin-bottom: 1rem;
     }
 
-    #taskForm {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    #taskInput {
-      flex: 1;
-      padding: 0.6rem;
-      border-radius: 0.5rem;
-      border: 1px solid #cbd5e1;
-    }
-
-    #taskForm button {
-      background: #1e40af;
+    .navbar {
+      background: #07137c;
       color: white;
-      border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    #taskForm button:hover {
-      background: #1e3a8a;
-    }
-
-    .task-list {
-      list-style: none;
-      padding: 0;
-    }
-
-    .task-list li {
-      background: #eff6ff;
-      padding: 0.75rem 1rem;
-      border-radius: 0.5rem;
-      margin-bottom: 0.5rem;
+      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .delete-btn {
-      background: #dc2626;
-      color: white;
-      border: none;
-      padding: 0.3rem 0.6rem;
-      border-radius: 0.4rem;
-      cursor: pointer;
-      font-size: 0.8rem;
+    .navbar .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
     }
 
-    #status {
+    .navbar button {
+      background: #f87171;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .section { margin-bottom: 2rem; }
+
+    .section h2 {
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.5rem;
+    }
+
+    .user-info p, .record p {
+      margin: 0.4rem 0;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    input, textarea {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       font-size: 1rem;
-      color: #1f2937;
+    }
+
+    button.submit-btn {
+      padding: 0.6rem;
+      background: #07137c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .history-item {
+      background: #f3f4f6;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
 <body>
-
-<div class="dashboard" id="dashboard" style="display:none;">
-  <h1 id="welcome">Welcome</h1>
-
-  <div class="user-info">
-    <p><strong>Email:</strong> <span id="email"></span></p>
-    <p><strong>Phone:</strong> <span id="phone"></span></p>
-    <p><strong>Balance:</strong> $<span id="balance">0.00</span></p>
-    <p><strong>Role:</strong> <span id="role">User</span></p>
+  <div class="navbar">
+    <div class="brand">Shatova</div>
+    <button onclick="logout()">Logout</button>
   </div>
 
-  <div class="task-section">
-    <h2>Your Tasks</h2>
-    <form id="taskForm">
-      <input type="text" id="taskInput" placeholder="Enter a task..." required />
-      <button type="submit">Add</button>
-    </form>
-    <ul id="taskList" class="task-list"></ul>
+  <div class="container">
+    <div class="section">
+      <h2>Welcome, <span id="userName">User</span>!</h2>
+      <div class="user-info">
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Phone:</strong> <span id="phone"></span></p>
+        <p><strong>Balance:</strong> $<span id="balance">0.00</span></p>
+        <p><strong>Role:</strong> <span id="role">User</span></p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Add Activity Record</h2>
+      <form id="recordForm">
+        <div class="form-group">
+          <input type="date" id="recordDate" required />
+          <textarea id="description" placeholder="Description" required></textarea>
+          <input type="number" id="amount" placeholder="Amount" required />
+        </div>
+        <button type="submit" class="submit-btn">Add Record</button>
+      </form>
+    </div>
+
+    <div class="section">
+      <h2>History</h2>
+      <div id="recordHistory"></div>
+    </div>
   </div>
-</div>
 
-<div id="status">Loading your dashboard...</div>
+  <script>
+    const token = localStorage.getItem("shatova_token");
+    if (!token) window.location.href = "/login.html";
 
-<script>
-  const token = localStorage.getItem("shatova_token");
+    async function fetchUser() {
+      try {
+        const res = await fetch("https://shatova.onrender.com/api/shatova/V1/dashboard", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error();
 
-  if (!token) {
-    window.location.href = "/login.html";
-  }
-
-  async function loadUserData() {
-    try {
-      const res = await fetch("https://shatova.onrender.com/api/shatova/V1/dashboard", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (!res.ok) throw new Error("Unauthorized");
-
-      const { user, message } = await res.json();
-
-      document.getElementById("welcome").textContent = `Hi, ${user.first_name}!`;
-      document.getElementById("email").textContent = user.email;
-      document.getElementById("phone").textContent = user.phone;
-      document.getElementById("balance").textContent = Number(user.balance).toFixed(2);
-      document.getElementById("role").textContent = user.role;
-
-      document.getElementById("status").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-    } catch (err) {
-      document.getElementById("status").textContent = "Session expired. Redirecting...";
-      setTimeout(() => window.location.href = "/login.html", 1500);
+        const user = data.user;
+        document.getElementById("userName").textContent = user.first_name;
+        document.getElementById("email").textContent = user.email;
+        document.getElementById("phone").textContent = user.phone;
+        document.getElementById("balance").textContent = user.balance.toFixed(2);
+        document.getElementById("role").textContent = user.role;
+      } catch {
+        alert("Session expired");
+        window.location.href = "/login.html";
+      }
     }
-  }
 
-  // Tasks
-  let tasks = [];
-
-  document.getElementById("taskForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const task = document.getElementById("taskInput").value.trim();
-    if (task) {
-      tasks.push(task);
-      document.getElementById("taskInput").value = '';
-      renderTasks();
+    function logout() {
+      localStorage.removeItem("shatova_token");
+      window.location.href = "/login.html";
     }
-  });
 
-  function renderTasks() {
-    const list = document.getElementById("taskList");
-    list.innerHTML = "";
-    tasks.forEach((task, index) => {
-      const li = document.createElement("li");
-      li.textContent = task;
+    const recordForm = document.getElementById("recordForm");
+    const history = document.getElementById("recordHistory");
+    const records = [];
 
-      const btn = document.createElement("button");
-      btn.className = "delete-btn";
-      btn.textContent = "Delete";
-      btn.onclick = () => {
-        tasks.splice(index, 1);
-        renderTasks();
-      };
+    recordForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const date = document.getElementById("recordDate").value;
+      const desc = document.getElementById("description").value;
+      const amt = parseFloat(document.getElementById("amount").value);
 
-      li.appendChild(btn);
-      list.appendChild(li);
+      records.unshift({ date, desc, amt });
+      renderHistory();
+      recordForm.reset();
     });
-  }
 
-  loadUserData();
-</script>
+    function renderHistory() {
+      history.innerHTML = "";
+      records.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.innerHTML = `<p><strong>Date:</strong> ${r.date}</p><p><strong>Description:</strong> ${r.desc}</p><p><strong>Amount:</strong> $${r.amt.toFixed(2)}</p>`;
+        history.appendChild(div);
+      });
+    }
 
+    fetchUser();
+  </script>
 </body>
 </html>
