@@ -2,127 +2,137 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard | Shatova</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Playfair+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #e0f2fe, #f8fafc);
-      color: #111827;
-    }
-
-    .navbar {
-      background: #07137c;
-      color: white;
-      padding: 1rem 2rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      height: 100vh;
+      background-color: #f9fafb;
     }
 
-    .navbar .brand {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-    }
-
-    .navbar button {
-      background: #f87171;
-      border: none;
+    .sidebar {
+      width: 250px;
+      background-color: #07137c;
       color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem;
+    }
+
+    .sidebar h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .nav-link {
+      margin: 0.5rem 0;
+      cursor: pointer;
+      padding: 0.6rem;
+      border-radius: 8px;
+    }
+
+    .nav-link:hover {
+      background-color: #1f2fa4;
+    }
+
+    .logout {
+      background: #e11d48;
+      color: white;
+      padding: 0.6rem;
+      border-radius: 8px;
+      text-align: center;
       cursor: pointer;
     }
 
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      background: white;
+    .main {
+      flex: 1;
       padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      overflow-y: auto;
     }
 
-    .section { margin-bottom: 2rem; }
-
-    .section h2 {
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 0.5rem;
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
     }
 
-    .user-info p, .record p {
-      margin: 0.4rem 0;
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .user-info p {
+      margin: 0.5rem 0;
     }
 
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
       margin-bottom: 1rem;
     }
 
-    input, textarea {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-
-    button.submit-btn {
-      padding: 0.6rem;
-      background: #07137c;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .history-item {
-      background: #f3f4f6;
-      padding: 1rem;
+    input, select {
+      padding: 0.7rem;
       border-radius: 8px;
-      margin-bottom: 1rem;
+      border: 1px solid #d1d5db;
+    }
+
+    button {
+      background-color: #07137c;
+      color: white;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      background-color: #f3f4f6;
     }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <div class="brand">Shatova</div>
-    <button onclick="logout()">Logout</button>
+
+  <div class="sidebar">
+    <div>
+      <h2>Shatova</h2>
+      <div class="nav-link">Dashboard</div>
+      <div class="nav-link">Add Record</div>
+      <div class="nav-link">History</div>
+    </div>
+    <div class="logout" onclick="logout()">Log out</div>
   </div>
 
-  <div class="container">
-    <div class="section">
-      <h2>Welcome, <span id="userName">User</span>!</h2>
+  <div class="main">
+    <div class="card">
+      <h3>Welcome, <span id="userName">User</span>!</h3>
       <div class="user-info">
-        <p><strong>Email:</strong> <span id="email"></span></p>
-        <p><strong>Phone:</strong> <span id="phone"></span></p>
-        <p><strong>Balance:</strong> $<span id="balance">0.00</span></p>
-        <p><strong>Role:</strong> <span id="role">User</span></p>
+        <p><strong>Email:</strong> <span id="userEmail"></span></p>
+        <p><strong>Phone:</strong> <span id="userPhone"></span></p>
+        <p><strong>Balance:</strong> $<span id="userBalance">0.00</span></p>
+        <p><strong>Role:</strong> <span id="userRole"></span></p>
       </div>
     </div>
 
-    <div class="section">
-      <h2>Add Activity Record</h2>
-      <form id="recordForm">
-        <div class="form-group">
-          <input type="date" id="recordDate" required />
-          <textarea id="description" placeholder="Description" required></textarea>
-          <input type="number" id="amount" placeholder="Amount" required />
-        </div>
-        <button type="submit" class="submit-btn">Add Record</button>
-      </form>
-    </div>
-
-    <div class="section">
-      <h2>History</h2>
-      <div id="recordHistory"></div>
-    </div>
-  </div>
 
   <script>
     const token = localStorage.getItem("shatova_token");
@@ -134,48 +144,24 @@
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
-        if (!data.success) throw new Error();
+        if (!data.success) throw new Error("Invalid token");
 
         const user = data.user;
         document.getElementById("userName").textContent = user.first_name;
-        document.getElementById("email").textContent = user.email;
-        document.getElementById("phone").textContent = user.phone;
-        document.getElementById("balance").textContent = user.balance.toFixed(2);
-        document.getElementById("role").textContent = user.role;
-      } catch {
+        document.getElementById("userEmail").textContent = user.email;
+        document.getElementById("userPhone").textContent = user.phone;
+        document.getElementById("userBalance").textContent = parseFloat(user.balance).toFixed(2);
+        document.getElementById("userRole").textContent = user.role;
+      } catch (err) {
         alert("Session expired");
-        window.location.href = "/login.html";
+        logout();
       }
     }
+
 
     function logout() {
       localStorage.removeItem("shatova_token");
       window.location.href = "/login.html";
-    }
-
-    const recordForm = document.getElementById("recordForm");
-    const history = document.getElementById("recordHistory");
-    const records = [];
-
-    recordForm.addEventListener("submit", function(e) {
-      e.preventDefault();
-      const date = document.getElementById("recordDate").value;
-      const desc = document.getElementById("description").value;
-      const amt = parseFloat(document.getElementById("amount").value);
-
-      records.unshift({ date, desc, amt });
-      renderHistory();
-      recordForm.reset();
-    });
-
-    function renderHistory() {
-      history.innerHTML = "";
-      records.forEach(r => {
-        const div = document.createElement("div");
-        div.className = "history-item";
-        div.innerHTML = `<p><strong>Date:</strong> ${r.date}</p><p><strong>Description:</strong> ${r.desc}</p><p><strong>Amount:</strong> $${r.amt.toFixed(2)}</p>`;
-        history.appendChild(div);
-      });
     }
 
     fetchUser();
