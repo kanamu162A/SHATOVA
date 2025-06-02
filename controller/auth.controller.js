@@ -51,7 +51,7 @@ export const register = async(req,res) =>{
 
             return res.status(403).json({
                 success:false,
-                message:"The phone and email is already registerd"
+                message:"The phone and email is already regitered"
             });
     
         };
