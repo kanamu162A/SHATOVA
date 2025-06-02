@@ -2,45 +2,118 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard | Shatova</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f6f8;
       margin: 0;
-      padding: 2rem;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #e0e7ff, #f0f9ff);
+      min-height: 100vh;
       display: flex;
+      align-items: center;
       justify-content: center;
+      padding: 2rem;
     }
 
     .dashboard {
-      background: white;
-      max-width: 600px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      max-width: 700px;
       width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 2rem;
+      padding: 2rem 2.5rem;
+      animation: fadeIn 1s ease;
     }
 
-    h1 { color: #2c3e50; }
-    .user-info p { margin: 0.5rem 0; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+    }
+
+    .user-info p {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .user-info strong {
+      color: #1f2937;
+    }
+
+    .task-section {
+      margin-top: 2rem;
+    }
+
+    .task-section h2 {
+      font-size: 1.25rem;
+      color: #111827;
+      margin-bottom: 1rem;
+    }
+
+    #taskForm {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    #taskInput {
+      flex: 1;
+      padding: 0.6rem;
+      border-radius: 0.5rem;
+      border: 1px solid #cbd5e1;
+    }
+
+    #taskForm button {
+      background: #1e40af;
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #taskForm button:hover {
+      background: #1e3a8a;
+    }
+
+    .task-list {
+      list-style: none;
+      padding: 0;
+    }
+
     .task-list li {
-      background: #eef1f5;
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 8px;
+      background: #eff6ff;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
     .delete-btn {
-      background: #e74c3c;
-      border: none;
+      background: #dc2626;
       color: white;
-      padding: 5px 10px;
-      border-radius: 5px;
+      border: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.4rem;
       cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    #status {
+      font-size: 1rem;
+      color: #1f2937;
     }
   </style>
 </head>
@@ -48,6 +121,7 @@
 
 <div class="dashboard" id="dashboard" style="display:none;">
   <h1 id="welcome">Welcome</h1>
+
   <div class="user-info">
     <p><strong>Email:</strong> <span id="email"></span></p>
     <p><strong>Phone:</strong> <span id="phone"></span></p>
@@ -55,15 +129,17 @@
     <p><strong>Role:</strong> <span id="role">User</span></p>
   </div>
 
-  <h2>Tasks</h2>
-  <form id="taskForm">
-    <input type="text" id="taskInput" placeholder="New task..." required />
-    <button type="submit">Add</button>
-  </form>
-  <ul id="taskList" class="task-list"></ul>
+  <div class="task-section">
+    <h2>Your Tasks</h2>
+    <form id="taskForm">
+      <input type="text" id="taskInput" placeholder="Enter a task..." required />
+      <button type="submit">Add</button>
+    </form>
+    <ul id="taskList" class="task-list"></ul>
+  </div>
 </div>
 
-<div id="status" style="text-align:center;">Loading...</div>
+<div id="status">Loading your dashboard...</div>
 
 <script>
   const token = localStorage.getItem("shatova_token");
@@ -78,24 +154,25 @@
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) throw new Error("Unauthorized");
 
-      const { user } = await res.json();
+      const { user, message } = await res.json();
 
       document.getElementById("welcome").textContent = `Hi, ${user.first_name}!`;
       document.getElementById("email").textContent = user.email;
       document.getElementById("phone").textContent = user.phone;
-      document.getElementById("balance").textContent = user.balance.toFixed(2);
+      document.getElementById("balance").textContent = Number(user.balance).toFixed(2);
       document.getElementById("role").textContent = user.role;
 
       document.getElementById("status").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
-    } catch {
+    } catch (err) {
       document.getElementById("status").textContent = "Session expired. Redirecting...";
       setTimeout(() => window.location.href = "/login.html", 1500);
     }
   }
 
+  // Tasks
   let tasks = [];
 
   document.getElementById("taskForm").addEventListener("submit", function(e) {
