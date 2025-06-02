@@ -132,7 +132,7 @@
 
       <div class="password-toggle">
         <input type="password" id="password" placeholder="Password" required aria-label="Password" style="width: 85%;" />
-        <button type="button" onclick="togglePassword()" aria-label="Toggle password visibility">👁</button>
+        <button type="button" onclick="togglePassword()">👁</button>
       </div>
 
       <button type="submit" class="submit-btn">Login</button>
@@ -160,6 +160,7 @@
           responseMsg.textContent = result.message;
           responseMsg.className = "message success";
 
+          // Save token correctly
           localStorage.setItem("shatova_token", result.token);
 
           setTimeout(() => {

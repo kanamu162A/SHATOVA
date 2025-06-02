@@ -66,7 +66,7 @@
 <div id="status" style="text-align:center;">Loading...</div>
 
 <script>
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("shatova_token");
 
   if (!token) {
     window.location.href = "/login.html";
@@ -74,11 +74,11 @@
 
   async function loadUserData() {
     try {
-      const res = await fetch("      https://shatova.onrender.com/api/shatova/V1/dashboard", {
+      const res = await fetch("https://shatova.onrender.com/api/shatova/V1/dashboard", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      if (!res.ok) throw new Error("Unauthorized");
+      if (!res.ok) throw new Error(await res.text());
 
       const { user } = await res.json();
 
