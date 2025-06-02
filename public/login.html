@@ -68,6 +68,15 @@
       justify-content: space-between;
     }
 
+    .password-toggle button {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.6rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
     .submit-btn {
       padding: 0.75rem;
       background-color: #07137c;
@@ -119,11 +128,11 @@
     <div class="tagline">Login to your account</div>
 
     <form id="loginForm">
-      <input type="tel" id="phone" placeholder="Phone" required />
-      
+      <input type="tel" id="phone" placeholder="Phone" required aria-label="Phone number" />
+
       <div class="password-toggle">
-        <input type="password" id="password" placeholder="Password" required style="width: 85%;" />
-        <button type="button" onclick="togglePassword()" style="font-size: 0.8rem;">👁</button>
+        <input type="password" id="password" placeholder="Password" required aria-label="Password" style="width: 85%;" />
+        <button type="button" onclick="togglePassword()" aria-label="Toggle password visibility">👁</button>
       </div>
 
       <button type="submit" class="submit-btn">Login</button>
@@ -169,8 +178,8 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const data = {
-        phone: document.getElementById("phone").value,
-        password: document.getElementById("password").value
+        phone: document.getElementById("phone").value.trim(),
+        password: document.getElementById("password").value.trim()
       };
       loginUser(data);
     });

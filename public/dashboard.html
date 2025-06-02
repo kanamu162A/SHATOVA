@@ -1,189 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Shatova Dashboard</title>
-<style>
-  /* Same styling as before for brevity */
-  *{ box-sizing:border-box; margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
-  body { background:#f9fafb; color:#333; display:flex; justify-content:center; padding:40px 20px; min-height:100vh;}
-  .dashboard {background:#fff; max-width:600px; width:100%; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.1); padding:30px 40px;}
-  h1 {font-weight:700; font-size:1.8rem; margin-bottom:20px; color:#2c3e50;}
-  .user-info {background:#ecf0f1; padding:20px 30px; border-radius:8px; margin-bottom:30px;}
-  .user-info p {margin-bottom:10px; font-size:1rem;}
-  .user-info b {color:#2980b9;}
-  h2 {font-weight:600; margin-bottom:15px; color:#34495e;}
-  form {display:flex; margin-bottom:20px;}
-  form input[type="text"] {flex-grow:1; padding:12px 15px; font-size:1rem; border:2px solid #bdc3c7; border-radius:8px 0 0 8px; outline:none; transition:border-color 0.3s ease;}
-  form input[type="text"]:focus {border-color:#2980b9;}
-  form button {background:#2980b9; border:none; color:white; padding:12px 25px; border-radius:0 8px 8px 0; font-weight:600; cursor:pointer; transition:background-color 0.3s ease;}
-  form button:hover {background:#1c5980;}
-  ul.task-list {list-style:none; max-height:300px; overflow-y:auto; padding-right:10px;}
-  ul.task-list li {background:#ecf0f1; margin-bottom:10px; padding:12px 15px; border-radius:6px; font-size:1rem; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 3px rgba(0,0,0,0.1);}
-  ul.task-list li .task-text {flex-grow:1; margin-right:10px;}
-  ul.task-list li button.delete-btn {background:#e74c3c; border:none; color:white; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; transition:background-color 0.3s ease;}
-  ul.task-list li button.delete-btn:hover {background:#c0392b;}
-  @media (max-width: 640px) {
-    .dashboard {padding:20px;}
-    form input[type="text"] {font-size:0.9rem;}
-    form button {font-size:0.9rem;}
-  }
-  #loading {
-    font-size: 1.2rem;
-    color: #2980b9;
-    text-align: center;
-    margin-top: 40px;
-  }
-  #error-msg {
-    color: #e74c3c;
-    font-weight: 600;
-    text-align: center;
-    margin-top: 40px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard | Shatova</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .dashboard {
+      background: white;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+
+    h1 { color: #2c3e50; }
+    .user-info p { margin: 0.5rem 0; }
+    .task-list li {
+      background: #eef1f5;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .delete-btn {
+      background: #e74c3c;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
-<main class="dashboard" role="main" style="display:none;">
-  <h1 id="welcome-msg">Loading...</h1>
+<div class="dashboard" id="dashboard" style="display:none;">
+  <h1 id="welcome">Welcome</h1>
+  <div class="user-info">
+    <p><strong>Email:</strong> <span id="email"></span></p>
+    <p><strong>Phone:</strong> <span id="phone"></span></p>
+    <p><strong>Balance:</strong> $<span id="balance">0.00</span></p>
+    <p><strong>Role:</strong> <span id="role">User</span></p>
+  </div>
 
-  <section class="user-info" aria-label="User Information">
-    <p><b>Balance:</b> $<span id="balance">0.00</span></p>
-    <p><b>Email:</b> <span id="email">user@example.com</span></p>
-    <p><b>Phone:</b> <span id="phone">+1234567890</span></p>
-    <p><b>Role:</b> <span id="role">User</span></p>
-  </section>
+  <h2>Tasks</h2>
+  <form id="taskForm">
+    <input type="text" id="taskInput" placeholder="New task..." required />
+    <button type="submit">Add</button>
+  </form>
+  <ul id="taskList" class="task-list"></ul>
+</div>
 
-  <section aria-labelledby="tasks-heading">
-    <h2 id="tasks-heading">Today's Tasks</h2>
-    <form id="task-form" aria-label="Add new task">
-      <input type="text" id="task-input" placeholder="Add a new task..." aria-required="true" autocomplete="off" />
-      <button type="submit">Add</button>
-    </form>
-
-    <ul class="task-list" id="task-list" aria-live="polite" aria-relevant="additions removals">
-      <!-- Tasks appear here -->
-    </ul>
-  </section>
-</main>
-
-<div id="loading">Loading your dashboard...</div>
-<div id="error-msg" role="alert" style="display:none;"></div>
+<div id="status" style="text-align:center;">Loading...</div>
 
 <script>
-  const dashboardEl = document.querySelector('.dashboard');
-  const loadingEl = document.getElementById('loading');
-  const errorEl = document.getElementById('error-msg');
+  const token = localStorage.getItem("token");
 
-  const welcomeMsg = document.getElementById('welcome-msg');
-  const balanceEl = document.getElementById('balance');
-  const emailEl = document.getElementById('email');
-  const phoneEl = document.getElementById('phone');
-  const roleEl = document.getElementById('role');
+  if (!token) {
+    window.location.href = "/login.html";
+  }
 
-  const form = document.getElementById('task-form');
-  const input = document.getElementById('task-input');
-  const taskList = document.getElementById('task-list');
+  async function loadUserData() {
+    try {
+      const res = await fetch("/api/dashboard", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error("Unauthorized");
+
+      const { user } = await res.json();
+
+      document.getElementById("welcome").textContent = `Hi, ${user.first_name}!`;
+      document.getElementById("email").textContent = user.email;
+      document.getElementById("phone").textContent = user.phone;
+      document.getElementById("balance").textContent = user.balance.toFixed(2);
+      document.getElementById("role").textContent = user.role;
+
+      document.getElementById("status").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+    } catch {
+      document.getElementById("status").textContent = "Session expired. Redirecting...";
+      setTimeout(() => window.location.href = "/login.html", 1500);
+    }
+  }
 
   let tasks = [];
 
-  // Fetch user data from backend using token
-  async function fetchUserData() {
-    try {
-      const token = localStorage.getItem('token'); // or sessionStorage
-      if (!token) throw new Error("No token found. Please login.");
-
-      const res = await fetch('/api/dashboard', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (res.status === 401 || res.status === 403) {
-        throw new Error("Unauthorized. Please login again.");
-      }
-
-      const data = await res.json();
-
-      if (!data.success) {
-        throw new Error(data.message || "Failed to load user data.");
-      }
-
-      return data.user;
-    } catch (err) {
-      throw err;
+  document.getElementById("taskForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const task = document.getElementById("taskInput").value.trim();
+    if (task) {
+      tasks.push(task);
+      document.getElementById("taskInput").value = '';
+      renderTasks();
     }
-  }
+  });
 
   function renderTasks() {
-    taskList.innerHTML = "";
-    if (tasks.length === 0) {
-      const noTasks = document.createElement('li');
-      noTasks.textContent = "No tasks added yet.";
-      noTasks.style.fontStyle = "italic";
-      noTasks.style.color = "#666";
-      taskList.appendChild(noTasks);
-      return;
-    }
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+    tasks.forEach((task, index) => {
+      const li = document.createElement("li");
+      li.textContent = task;
 
-    tasks.forEach((task, idx) => {
-      const li = document.createElement('li');
-
-      const taskText = document.createElement('span');
-      taskText.textContent = task;
-      taskText.className = 'task-text';
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = "Delete";
-      deleteBtn.className = 'delete-btn';
-      deleteBtn.setAttribute('aria-label', `Delete task: ${task}`);
-      deleteBtn.addEventListener('click', () => {
-        tasks.splice(idx, 1);
+      const btn = document.createElement("button");
+      btn.className = "delete-btn";
+      btn.textContent = "Delete";
+      btn.onclick = () => {
+        tasks.splice(index, 1);
         renderTasks();
-      });
+      };
 
-      li.appendChild(taskText);
-      li.appendChild(deleteBtn);
-      taskList.appendChild(li);
+      li.appendChild(btn);
+      list.appendChild(li);
     });
   }
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const val = input.value.trim();
-    if (!val) return;
-    tasks.push(val);
-    input.value = '';
-    renderTasks();
-  });
-
-  async function init() {
-    try {
-      const user = await fetchUserData();
-
-      welcomeMsg.textContent = `Hi! ${user.first_name}, Welcome to Shatova ${user.role} Dashboard`;
-      balanceEl.textContent = user.balance.toFixed(2);
-      emailEl.textContent = user.email;
-      phoneEl.textContent = user.phone;
-      roleEl.textContent = user.role;
-
-      loadingEl.style.display = 'none';
-      errorEl.style.display = 'none';
-      dashboardEl.style.display = 'block';
-
-      renderTasks();
-    } catch (error) {
-      loadingEl.style.display = 'none';
-      errorEl.textContent = error.message;
-      errorEl.style.display = 'block';
-
-      // Optionally redirect to login page
-      // window.location.href = '/login.html';
-    }
-  }
-
-  init();
+  loadUserData();
 </script>
 
 </body>
