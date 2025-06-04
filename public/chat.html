@@ -89,13 +89,21 @@
     .chat-input {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .chat-input input {
-      flex: 1;
       padding: 12px;
       border: 1px solid #ccc;
       border-radius: 8px;
+    }
+
+    #receiverPhone {
+      flex: 1;
+    }
+
+    #chatInput {
+      flex: 2;
     }
 
     .chat-input button {
@@ -148,6 +156,7 @@
       <!-- Messages will appear here -->
     </div>
     <div class="chat-input">
+      <input type="text" id="receiverPhone" placeholder="Enter receiver's phone..." />
       <input type="text" id="chatInput" placeholder="Type your message..." />
       <button onclick="sendMessage()">Send</button>
     </div>
@@ -156,39 +165,62 @@
   <!-- JavaScript -->
   <script>
     const token = localStorage.getItem("shatova_token");
-    if (!token) {
+    const senderPhone = localStorage.getItem("shatova_phone");
+
+    if (!token || !senderPhone) {
       window.location.href = "/login.html";
     }
 
     function logout() {
       localStorage.removeItem("shatova_token");
+      localStorage.removeItem("shatova_phone");
       window.location.href = "/login.html";
     }
 
     const chatBox = document.getElementById("chatBox");
     const chatInput = document.getElementById("chatInput");
+    const receiverPhone = document.getElementById("receiverPhone");
 
-    function sendMessage() {
-      const text = chatInput.value.trim();
-      if (!text) return;
+    async function sendMessage() {
+      const message = chatInput.value.trim();
+      const receiver = receiverPhone.value.trim();
 
-      // Add user message
+      if (!receiver || !message) {
+        alert("Receiver and message are required!");
+        return;
+      }
+
+      // Show user's message
       const userMsg = document.createElement("div");
       userMsg.className = "message self";
-      userMsg.textContent = text;
+      userMsg.textContent = message;
       chatBox.appendChild(userMsg);
-
-      chatInput.value = "";
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Simulated reply
-      setTimeout(() => {
-        const botMsg = document.createElement("div");
-        botMsg.className = "message";
-        botMsg.textContent = "Thanks for your message!";
-        chatBox.appendChild(botMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }, 800);
+      chatInput.value = "";
+
+      // Send to backend
+      try {
+        const response = await fetch("/api/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            sender_phone: senderPhone,
+            receiver_phone: receiver,
+            message
+          })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          alert("Message failed: " + result.message);
+        }
+      } catch (error) {
+        alert("Failed to send message: " + error.message);
+      }
     }
 
     // Optional: Press Enter to send
