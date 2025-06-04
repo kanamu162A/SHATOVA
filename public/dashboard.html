@@ -55,6 +55,8 @@
       flex: 1;
       padding: 2rem;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
 
     .card {
@@ -79,10 +81,13 @@
       margin-bottom: 1rem;
     }
 
-    input, select {
+    input, select, textarea {
       padding: 0.7rem;
       border-radius: 8px;
       border: 1px solid #d1d5db;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: none;
     }
 
     button {
@@ -93,6 +98,7 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
+      margin-top: 0.5rem;
     }
 
     table {
@@ -108,6 +114,21 @@
 
     th {
       background-color: #f3f4f6;
+    }
+
+    #talk-chat-box {
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f3f4f6;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    #talk-chat-box div {
+      margin-bottom: 8px;
     }
   </style>
 </head>
@@ -129,15 +150,27 @@
       <div class="user-info">
         <p><strong>Email:</strong> <span id="userEmail"></span></p>
         <p><strong>Phone:</strong> <span id="userPhone"></span></p>
-     <div>   <p><strong>Balance:</strong> ₦<span id="userBalance"><b>0.00</span></p></b>
+        <p><strong>Balance:</strong> ₦<span id="userBalance">0.00</span></p>
         <p><strong>Date Join:</strong> <span id="created_at"></span></p>
       </div>
     </div>
 
+    <!-- Talk to Us Card -->
+    <div class="card">
+      <h3>Talk to Us</h3>
+      <div id="talk-chat-box">
+        <div>Loading messages...</div>
+      </div>
+      <textarea id="talk-message-input" placeholder="Type your message here..." rows="3"></textarea>
+      <button onclick="sendTalkMessage()">Send</button>
+    </div>
+  </div>
 
   <script>
     const token = localStorage.getItem("shatova_token");
     if (!token) window.location.href = "/login.html";
+
+    let currentUserPhone = null;
 
     async function fetchUser() {
       try {
@@ -148,24 +181,82 @@
         if (!data.success) throw new Error("Invalid token");
 
         const user = data.user;
+        currentUserPhone = user.phone;
+
         document.getElementById("userName").textContent = user.first_name;
         document.getElementById("userEmail").textContent = user.email;
         document.getElementById("userPhone").textContent = user.phone;
         document.getElementById("userBalance").textContent = parseFloat(user.balance).toFixed(2);
-        document.getElementById("userRole").textContent = user.role;
+        if(user.created_at) {
+          document.getElementById("created_at").textContent = new Date(user.created_at).toLocaleDateString();
+        }
       } catch (err) {
         alert("Session expired");
         logout();
       }
     }
 
+    async function loadTalkMessages() {
+      if (!currentUserPhone) return;
+
+      try {
+        const res = await fetch(`https://shatova.onrender.com/api/talk/messages?user=${encodeURIComponent(currentUserPhone)}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!data.success) return;
+
+        const chatBox = document.getElementById('talk-chat-box');
+        chatBox.innerHTML = "";
+        data.messages.forEach(msg => {
+          const from = msg.sender_phone === currentUserPhone ? "You" : "Admin";
+          const div = document.createElement('div');
+          div.textContent = `${from}: ${msg.message}`;
+          chatBox.appendChild(div);
+        });
+        chatBox.scrollTop = chatBox.scrollHeight;
+      } catch (error) {
+        console.error("Failed to load messages", error);
+      }
+    }
+
+    async function sendTalkMessage() {
+      const input = document.getElementById('talk-message-input');
+      const message = input.value.trim();
+      if (!message || !currentUserPhone) return;
+
+      try {
+        const res = await fetch('https://shatova.onrender.com/api/talk/send-message', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ sender_phone: currentUserPhone, message })
+        });
+        const data = await res.json();
+        if (data.success) {
+          input.value = "";
+          await loadTalkMessages();
+        } else {
+          alert("Failed to send message.");
+        }
+      } catch (error) {
+        alert("Error sending message.");
+      }
+    }
 
     function logout() {
       localStorage.removeItem("shatova_token");
       window.location.href = "/login.html";
     }
 
-    fetchUser();
+    // Load everything when the page is ready
+    window.addEventListener('DOMContentLoaded', async () => {
+      await fetchUser();       // Wait until user is fetched
+      loadTalkMessages();      // Then load messages
+      setInterval(loadTalkMessages, 3000); // Refresh messages every 3 secs
+    });
   </script>
 </body>
 </html>
