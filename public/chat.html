@@ -2,195 +2,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Let's Chat | Shatova</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", sans-serif;
-    }
-
     body {
-      display: flex;
-      min-height: 100vh;
-      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 2rem auto;
+      background: #f0f0f0;
+      padding: 1rem;
     }
-
-    .sidebar {
-      width: 220px;
-      background-color: #1e1e2f;
-      color: #fff;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar h2 {
-      font-size: 1.8em;
-      margin-bottom: 30px;
-      color: #00b894;
-    }
-
-    .sidebar a {
-      display: block;
-      margin: 12px 0;
-      color: #fff;
-      text-decoration: none;
-      font-size: 1.1em;
-      transition: 0.3s;
-    }
-
-    .sidebar a:hover {
-      color: #00cec9;
-      padding-left: 8px;
-    }
-
-    .logout {
-      margin-top: auto;
-      cursor: pointer;
-      color: #d63031;
-      font-weight: bold;
-    }
-
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-    }
-
-    .chat-box {
-      flex: 1;
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
+    #chatBox {
+      height: 400px;
       overflow-y: auto;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .message {
-      margin-bottom: 15px;
-      max-width: 70%;
-      padding: 10px 15px;
-      border-radius: 15px;
-      background-color: #dff9fb;
-      align-self: flex-start;
-    }
-
-    .message.self {
-      background-color: #74b9ff;
-      color: white;
-      align-self: flex-end;
-    }
-
-    .chat-input {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .chat-input input {
-      padding: 12px;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
       border: 1px solid #ccc;
-      border-radius: 8px;
     }
-
-    #receiverPhone {
-      flex: 1;
+    .message {
+      max-width: 60%;
+      margin-bottom: 0.8rem;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      background: #dff9fb;
     }
-
-    #chatInput {
-      flex: 2;
-    }
-
-    .chat-input button {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      background-color: #0984e3;
+    .message.self {
+      background: #74b9ff;
       color: white;
-      font-weight: bold;
-      cursor: pointer;
+      margin-left: auto;
     }
-
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-around;
-      }
-
-      .main {
-        padding: 10px;
-      }
-
-      .chat-box {
-        height: 400px;
-      }
+    #receiverPhone, #chatInput {
+      padding: 0.7rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 48%;
+    }
+    #chatInput {
+      width: 48%;
+    }
+    #sendBtn {
+      padding: 0.7rem 1.2rem;
+      background: #0984e3;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 1%;
+      width: 48%;
     }
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div>
-      <h2>Shatova</h2>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="chat.html">Let's Chat</a>
-      <a href="uploads.html">Uploads</a>
-      <a href="history.html">History</a>
-    </div>
-    <div class="logout" onclick="logout()">Log out</div>
+
+  <h2>Let's Chat</h2>
+  <div>
+    <input type="text" id="receiverPhone" placeholder="Receiver's phone" />
+    <input type="text" id="chatInput" placeholder="Type your message" />
+    <button id="sendBtn">Send</button>
   </div>
 
-  <!-- Main -->
-  <div class="main">
-    <div class="chat-box" id="chatBox">
-      <!-- Messages will appear here -->
-    </div>
-    <div class="chat-input">
-      <input type="text" id="receiverPhone" placeholder="Enter receiver's phone..." />
-      <input type="text" id="chatInput" placeholder="Type your message..." />
-      <button onclick="sendMessage()">Send</button>
-    </div>
-  </div>
+  <div id="chatBox"></div>
 
-  <!-- JavaScript -->
   <script>
-    const token = localStorage.getItem("shatova_token");
-    const senderPhone = localStorage.getItem("shatova_phone");
+    // For demo, hardcode sender phone, or get from localStorage
+    const senderPhone = localStorage.getItem("shatova_phone") || "1234567890";
 
-    if (!token || !senderPhone) {
-      window.location.href = "/login.html";
-    }
-
-    function logout() {
-      localStorage.removeItem("shatova_token");
-      localStorage.removeItem("shatova_phone");
-      window.location.href = "/login.html";
-    }
-
-    const chatBox = document.getElementById("chatBox");
+    const receiverPhoneInput = document.getElementById("receiverPhone");
     const chatInput = document.getElementById("chatInput");
-    const receiverPhone = document.getElementById("receiverPhone");
+    const sendBtn = document.getElementById("sendBtn");
+    const chatBox = document.getElementById("chatBox");
 
+    // Fetch messages and update chat box
+    async function fetchMessages() {
+      const receiverPhone = receiverPhoneInput.value.trim();
+      if (!receiverPhone) return;
+
+      try {
+        const res = await fetch(`/api/messages?user1=${senderPhone}&user2=${receiverPhone}`);
+        const data = await res.json();
+        if (data.success) {
+          chatBox.innerHTML = "";
+          data.messages.forEach(msg => {
+            const msgDiv = document.createElement("div");
+            msgDiv.textContent = msg.message;
+            msgDiv.className = "message " + (msg.sender_phone === senderPhone ? "self" : "");
+            chatBox.appendChild(msgDiv);
+          });
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      } catch (error) {
+        console.error("Failed to fetch messages", error);
+      }
+    }
+
+    // Send message function
     async function sendMessage() {
       const message = chatInput.value.trim();
-      const receiver = receiverPhone.value.trim();
+      const receiver = receiverPhoneInput.value.trim();
 
       if (!receiver || !message) {
-        alert("Receiver and message are required!");
+        alert("Receiver and message are required");
         return;
       }
 
-      // Show user's message
+      // Show message immediately
       const userMsg = document.createElement("div");
       userMsg.className = "message self";
       userMsg.textContent = message;
@@ -199,36 +116,44 @@
 
       chatInput.value = "";
 
-      // Send to backend
       try {
         const response = await fetch("/api/messages", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             sender_phone: senderPhone,
             receiver_phone: receiver,
-            message
-          })
+            message,
+          }),
         });
 
         const result = await response.json();
 
         if (!result.success) {
           alert("Message failed: " + result.message);
+        } else {
+          // Refresh chat to sync messages from server
+          fetchMessages();
         }
       } catch (error) {
         alert("Failed to send message: " + error.message);
       }
     }
 
-    // Optional: Press Enter to send
-    chatInput.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        sendMessage();
-      }
+    // Event listeners
+    sendBtn.addEventListener("click", sendMessage);
+    chatInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
     });
+    receiverPhoneInput.addEventListener("change", fetchMessages);
+
+    // Initial fetch on load (if receiver phone exists)
+    window.onload = () => {
+      if (receiverPhoneInput.value.trim()) fetchMessages();
+    };
   </script>
+
 </body>
 </html>
