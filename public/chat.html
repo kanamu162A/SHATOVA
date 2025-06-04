@@ -3,17 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Let's Chat | Shatova</title>
+  <title>Shatova Chat App</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: 2rem auto;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
       background: #f0f0f0;
+    }
+    .sidebar {
+      width: 30%;
+      background: #2d3436;
+      color: white;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .sidebar h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    .contact {
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      background: #636e72;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .contact.active {
+      background: #00cec9;
+    }
+    .chat-container {
+      width: 70%;
+      display: flex;
+      flex-direction: column;
       padding: 1rem;
     }
     #chatBox {
-      height: 400px;
+      flex: 1;
       overflow-y: auto;
       background: white;
       padding: 1rem;
@@ -40,58 +69,69 @@
       margin-top: 4px;
       color: #555;
     }
-    #receiverPhone, #chatInput {
+    #chatInput {
       padding: 0.7rem;
       border-radius: 6px;
       border: 1px solid #ccc;
-      width: 48%;
+      width: 75%;
     }
     #sendBtn {
-      padding: 0.7rem 1.2rem;
+      padding: 0.7rem 1rem;
       background: #0984e3;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin-left: 1%;
-      width: 48%;
+      width: 20%;
+    }
+    .send-area {
+      display: flex;
+      gap: 5%;
+    }
+    #contactUpload {
+      margin-top: 10px;
+      width: 100%;
     }
   </style>
 </head>
 <body>
 
-  <h2>Let's Chat</h2>
-  <div>
-    <input type="text" id="receiverPhone" placeholder="Receiver's phone" />
-    <input type="text" id="chatInput" placeholder="Type your message" />
-    <button id="sendBtn">Send</button>
+  <div class="sidebar">
+    <h3>Recent Chats</h3>
+    <input type="file" id="contactUpload" accept=".json" />
+    <div id="contactList"></div>
   </div>
 
-  <div id="chatBox"></div>
+  <div class="chat-container">
+    <div id="chatBox"></div>
+    <div class="send-area">
+      <input type="text" id="chatInput" placeholder="Type your message" />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
 
   <script>
     const senderPhone = localStorage.getItem("shatova_phone") || "1234567890";
-    const receiverPhoneInput = document.getElementById("receiverPhone");
+    const chatBox = document.getElementById("chatBox");
     const chatInput = document.getElementById("chatInput");
     const sendBtn = document.getElementById("sendBtn");
-    const chatBox = document.getElementById("chatBox");
+    const contactList = document.getElementById("contactList");
+    const contactUpload = document.getElementById("contactUpload");
+
+    let currentReceiver = "";
 
     async function fetchMessages() {
-      const receiverPhone = receiverPhoneInput.value.trim();
-      if (!receiverPhone) return;
+      if (!currentReceiver) return;
 
       try {
-        const res = await fetch(`https://shatova.onrender.com/api/shatova/V1/messages?user1=${encodeURIComponent(senderPhone)}&user2=${encodeURIComponent(receiverPhone)}`);
+        const res = await fetch(`https://shatova.onrender.com/api/shatova/V1/messages?user1=${encodeURIComponent(senderPhone)}&user2=${encodeURIComponent(currentReceiver)}`);
         const data = await res.json();
         if (data.success) {
           chatBox.innerHTML = "";
           data.messages.forEach(msg => {
             const msgDiv = document.createElement("div");
             msgDiv.className = "message " + (msg.sender_phone === senderPhone ? "self" : "");
-            msgDiv.innerHTML = `
-              ${msg.message}
-              <span class="timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</span>
-            `;
+            msgDiv.innerHTML = `${msg.message}<span class="timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</span>`;
             chatBox.appendChild(msgDiv);
           });
           chatBox.scrollTop = chatBox.scrollHeight;
@@ -103,63 +143,95 @@
 
     async function sendMessage() {
       const message = chatInput.value.trim();
-      const receiver = receiverPhoneInput.value.trim();
-
-      if (!receiver || !message) {
-        alert("Receiver and message are required");
+      if (!currentReceiver || !message) {
+        alert("Select contact and type a message.");
         return;
       }
 
-      const userMsg = document.createElement("div");
-      userMsg.className = "message self";
-      userMsg.innerHTML = `
-        ${message}
-        <span class="timestamp">Sending...</span>
-      `;
-      chatBox.appendChild(userMsg);
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "message self";
+      msgDiv.innerHTML = `${message}<span class="timestamp">Sending...</span>`;
+      chatBox.appendChild(msgDiv);
       chatBox.scrollTop = chatBox.scrollHeight;
       chatInput.value = "";
 
       try {
-        const response = await fetch("https://shatova.onrender.com/api/shatova/V1/messages/", {
+        const res = await fetch("https://shatova.onrender.com/api/shatova/V1/messages/", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             sender_phone: senderPhone,
-            receiver_phone: receiver,
+            receiver_phone: currentReceiver,
             message: message,
           }),
         });
-
-        const result = await response.json();
+        const result = await res.json();
         if (!result.success) {
-          alert("Message failed: " + result.message);
+          alert("Failed to send: " + result.message);
         } else {
           fetchMessages();
         }
       } catch (error) {
-        alert("Failed to send message: " + error.message);
+        alert("Failed to send message.");
       }
     }
 
-    // Refresh messages every 3 seconds
-    setInterval(() => {
-      if (receiverPhoneInput.value.trim()) {
-        fetchMessages();
-      }
-    }, 3000);
-
     sendBtn.addEventListener("click", sendMessage);
-    chatInput.addEventListener("keypress", (e) => {
+    chatInput.addEventListener("keypress", e => {
       if (e.key === "Enter") sendMessage();
     });
-    receiverPhoneInput.addEventListener("change", fetchMessages);
+
+    // Upload contact file (JSON only)
+    contactUpload.addEventListener("change", async function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function (e) {
+        try {
+          const contacts = JSON.parse(e.target.result); // [{ phone: "09012345678" }, ...]
+          const res = await fetch("https://shatova.onrender.com/api/shatova/V1/filter-contacts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contacts })
+          });
+
+          const data = await res.json();
+          if (data.success) {
+            contactList.innerHTML = "";
+            data.registeredContacts.forEach(user => {
+              if (user.phone !== senderPhone) {
+                const div = document.createElement("div");
+                div.className = "contact";
+                div.textContent = user.phone;
+                div.onclick = () => {
+                  currentReceiver = user.phone;
+                  document.querySelectorAll(".contact").forEach(c => c.classList.remove("active"));
+                  div.classList.add("active");
+                  fetchMessages();
+                };
+                contactList.appendChild(div);
+              }
+            });
+          } else {
+            alert("No registered contacts found.");
+          }
+        } catch (err) {
+          alert("Invalid JSON file format.");
+        }
+      };
+      reader.readAsText(file);
+    });
 
     window.onload = () => {
-      if (receiverPhoneInput.value.trim()) fetchMessages();
+      // Optional: auto-load public registered users
+      // fetchContacts();
     };
+
+    // Refresh messages every 3 seconds
+    setInterval(() => {
+      if (currentReceiver) fetchMessages();
+    }, 3000);
   </script>
 
 </body>

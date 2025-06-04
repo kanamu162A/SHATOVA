@@ -1,7 +1,7 @@
 import pool from "../config/database.js";
 
 
-exports.sendMessage = async (req, res) => {
+export const sendMessage = async (req, res) => {
   const { sender_phone, receiver_phone, message } = req.body;
 
   if (!sender_phone || !receiver_phone || !message) {
@@ -20,7 +20,7 @@ exports.sendMessage = async (req, res) => {
   }
 };
 
-exports.getMessages = async (req, res) => {
+export const getMessages = async (req, res) => {
   const { user1, user2 } = req.query;
 
   if (!user1 || !user2) {
