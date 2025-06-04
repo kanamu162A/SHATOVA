@@ -22,13 +22,15 @@
       flex-direction: column;
       justify-content: space-between;
       padding: 1rem;
-      height: 80%;
     }
 
     .sidebar h2 {
-      font-size: 1.0rem;
+      font-size: 1.4rem;
       margin-bottom: 1rem;
-      font-weight: 500;
+      font-weight: 600;
+      font-style: italic;
+      text-transform: uppercase;
+      color: #ffe600;
     }
 
     .nav-link {
@@ -101,22 +103,7 @@
       margin-top: 0.5rem;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    th {
-      background-color: #f3f4f6;
-    }
-
-    #talk-chat-box {
+    #chat-box, #talk-chat-box {
       height: 200px;
       overflow-y: auto;
       border: 1px solid #ccc;
@@ -127,18 +114,18 @@
       font-size: 0.9rem;
     }
 
-    #talk-chat-box div {
+    #chat-box div, #talk-chat-box div {
       margin-bottom: 8px;
     }
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <div>
       <h2>Shatova</h2>
       <div class="nav-link">Dashboard</div>
-      <div class="nav-link">Add Record</div>
+      <div class="nav-link">Let's Chat</div>
+      <div class="nav-link">Uploads</div>
       <div class="nav-link">History</div>
     </div>
     <div class="logout" onclick="logout()">Log out</div>
@@ -151,18 +138,27 @@
         <p><strong>Email:</strong> <span id="userEmail"></span></p>
         <p><strong>Phone:</strong> <span id="userPhone"></span></p>
         <p><strong>Balance:</strong> ₦<span id="userBalance">0.00</span></p>
-        <p><strong>Date Join:</strong> <span id="created_at"></span></p>
+        <p><strong>Date Joined:</strong> <span id="created_at"></span></p>
       </div>
     </div>
 
-    <!-- Talk to Us Card -->
     <div class="card">
-      <h3>Talk to Us</h3>
-      <div id="talk-chat-box">
-        <div>Loading messages...</div>
+      <h3>Let's Chat With Other Users</h3>
+      <div class="form-group">
+        <input type="text" id="receiverPhone" placeholder="Enter recipient's phone number" />
       </div>
-      <textarea id="talk-message-input" placeholder="Type your message here..." rows="3"></textarea>
-      <button onclick="sendTalkMessage()">Send</button>
+      <div id="chat-box">No messages yet.</div>
+      <textarea id="chat-message" placeholder="Type your message..." rows="3"></textarea>
+      <button onclick="sendUserMessage()">Send Message</button>
+    </div>
+
+    <div class="card">
+      <h3>Upload Your Data</h3>
+      <div class="form-group">
+        <input type="text" id="uploadPhone" placeholder="Phone number" />
+        <input type="file" id="uploadFile" />
+      </div>
+      <button onclick="uploadData()">Upload</button>
     </div>
   </div>
 
@@ -187,62 +183,61 @@
         document.getElementById("userEmail").textContent = user.email;
         document.getElementById("userPhone").textContent = user.phone;
         document.getElementById("userBalance").textContent = parseFloat(user.balance).toFixed(2);
-        if(user.created_at) {
-          document.getElementById("created_at").textContent = new Date(user.created_at).toLocaleDateString();
-        }
+        document.getElementById("created_at").textContent = new Date(user.created_at).toLocaleDateString();
       } catch (err) {
         alert("Session expired");
         logout();
       }
     }
 
-    async function loadTalkMessages() {
-      if (!currentUserPhone) return;
-
-      try {
-        const res = await fetch(`https://shatova.onrender.com/api/talk/messages?user=${encodeURIComponent(currentUserPhone)}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (!data.success) return;
-
-        const chatBox = document.getElementById('talk-chat-box');
-        chatBox.innerHTML = "";
-        data.messages.forEach(msg => {
-          const from = msg.sender_phone === currentUserPhone ? "You" : "Admin";
-          const div = document.createElement('div');
-          div.textContent = `${from}: ${msg.message}`;
-          chatBox.appendChild(div);
-        });
-        chatBox.scrollTop = chatBox.scrollHeight;
-      } catch (error) {
-        console.error("Failed to load messages", error);
-      }
-    }
-
-    async function sendTalkMessage() {
-      const input = document.getElementById('talk-message-input');
-      const message = input.value.trim();
-      if (!message || !currentUserPhone) return;
+    async function sendUserMessage() {
+      const phone = document.getElementById('receiverPhone').value.trim();
+      const message = document.getElementById('chat-message').value.trim();
+      if (!phone || !message || !currentUserPhone) return;
 
       try {
         const res = await fetch('https://shatova.onrender.com/api/talk/send-message', {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           },
-          body: JSON.stringify({ sender_phone: currentUserPhone, message })
+          body: JSON.stringify({ sender_phone: currentUserPhone, receiver_phone: phone, message })
         });
         const data = await res.json();
         if (data.success) {
-          input.value = "";
-          await loadTalkMessages();
+          document.getElementById('chat-message').value = "";
+          document.getElementById('chat-box').innerHTML += `<div>You to ${phone}: ${message}</div>`;
         } else {
-          alert("Failed to send message.");
+          alert("Message failed to send.");
         }
-      } catch (error) {
+      } catch (err) {
         alert("Error sending message.");
+      }
+    }
+
+    async function uploadData() {
+      const phone = document.getElementById('uploadPhone').value.trim();
+      const fileInput = document.getElementById('uploadFile');
+      const file = fileInput.files[0];
+      if (!file || !phone) return alert("Please fill all fields");
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("phone", phone);
+
+      try {
+        const res = await fetch("https://shatova.onrender.com/api/uploads/data", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await res.json();
+        alert(data.success ? "Upload successful" : "Upload failed");
+      } catch (err) {
+        alert("Upload error.");
       }
     }
 
@@ -251,12 +246,7 @@
       window.location.href = "/login.html";
     }
 
-    // Load everything when the page is ready
-    window.addEventListener('DOMContentLoaded', async () => {
-      await fetchUser();       // Wait until user is fetched
-      loadTalkMessages();      // Then load messages
-      setInterval(loadTalkMessages, 3000); // Refresh messages every 3 secs
-    });
+    window.addEventListener('DOMContentLoaded', fetchUser);
   </script>
 </body>
 </html>
