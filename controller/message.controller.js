@@ -1,45 +1,45 @@
-import pool from '../config/database.js';
+import pool from "../config/database.js";
 
-export const getMessages = async (req, res) => {
-  const { user1, user2 } = req.query;
 
-  if (!user1 || !user2) {
-    return res.status(400).json({ success: false, message: "Both user phone numbers are required" });
+exports.sendMessage = async (req, res) => {
+  const { sender_phone, receiver_phone, message } = req.body;
+
+  if (!sender_phone || !receiver_phone || !message) {
+    return res.status(400).json({ success: false, message: "Missing fields" });
   }
 
   try {
-    const query = `
-      SELECT id, sender_phone, receiver_phone, message, timestamp
-      FROM messages
-      WHERE (sender_phone = $1 AND receiver_phone = $2)
-         OR (sender_phone = $2 AND receiver_phone = $1)
-      ORDER BY timestamp ASC
-    `;
-    const { rows } = await pool.query(query, [user1, user2]);
-    return res.json({ success: true, messages: rows });
-  } catch (error) {
-    console.error("getMessages error:", error);
-    return res.status(500).json({ success: false, message: "Server error occurred" });
+    await pool.query(
+      "INSERT INTO messages (sender_phone, receiver_phone, message, timestamp) VALUES ($1, $2, $3, NOW())",
+      [sender_phone, receiver_phone, message]
+    );
+    res.json({ success: true, message: "Message sent" });
+  } catch (err) {
+    console.error("Error inserting message:", err.message);
+    res.status(500).json({ success: false, message: "Database error" });
   }
 };
 
-export const sendMessage = async (req, res) => {
-  const { sender_phone, receiver_phone, message } = req.body;
+exports.getMessages = async (req, res) => {
+  const { user1, user2 } = req.query;
 
-  if (!sender_phone || !receiver_phone || !message?.trim()) {
-    return res.status(400).json({ success: false, message: "Sender, receiver, and non-empty message are required" });
+  if (!user1 || !user2) {
+    return res.status(400).json({ success: false, message: "Missing user phones" });
   }
 
   try {
-    const query = `
-      INSERT INTO messages (sender_phone, receiver_phone, message)
-      VALUES ($1, $2, $3)
-      RETURNING id, sender_phone, receiver_phone, message, timestamp
-    `;
-    const { rows } = await pool.query(query, [sender_phone, receiver_phone, message.trim()]);
-    return res.status(201).json({ success: true, message: "Message sent", data: rows[0] });
-  } catch (error) {
-    console.error("sendMessage error:", error);
-    return res.status(500).json({ success: false, message: "Server error occurred" });
+    const result = await pool.query(
+      `
+      SELECT * FROM messages
+      WHERE (sender_phone = $1 AND receiver_phone = $2)
+         OR (sender_phone = $2 AND receiver_phone = $1)
+      ORDER BY timestamp ASC
+      `,
+      [user1, user2]
+    );
+    res.json({ success: true, messages: result.rows });
+  } catch (err) {
+    console.error("Error fetching messages:", err.message);
+    res.status(500).json({ success: false, message: "Database error" });
   }
 };

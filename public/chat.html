@@ -27,11 +27,18 @@
       padding: 0.6rem 1rem;
       border-radius: 12px;
       background: #dff9fb;
+      position: relative;
     }
     .message.self {
       background: #74b9ff;
       color: white;
       margin-left: auto;
+    }
+    .timestamp {
+      display: block;
+      font-size: 0.7rem;
+      margin-top: 4px;
+      color: #555;
     }
     #receiverPhone, #chatInput {
       padding: 0.7rem;
@@ -75,27 +82,22 @@
 
       try {
         const res = await fetch(`https://shatova.onrender.com/api/shatova/V1/messages?user1=${encodeURIComponent(senderPhone)}&user2=${encodeURIComponent(receiverPhone)}`);
-        const contentType = res.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Expected JSON response but got something else");
-        }
-
         const data = await res.json();
         if (data.success) {
           chatBox.innerHTML = "";
           data.messages.forEach(msg => {
             const msgDiv = document.createElement("div");
-            msgDiv.textContent = msg.message;
             msgDiv.className = "message " + (msg.sender_phone === senderPhone ? "self" : "");
+            msgDiv.innerHTML = `
+              ${msg.message}
+              <span class="timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</span>
+            `;
             chatBox.appendChild(msgDiv);
           });
           chatBox.scrollTop = chatBox.scrollHeight;
-        } else {
-          alert("Failed to load messages: " + data.message);
         }
       } catch (error) {
         console.error("Fetch error:", error);
-        alert("Error loading messages");
       }
     }
 
@@ -110,7 +112,10 @@
 
       const userMsg = document.createElement("div");
       userMsg.className = "message self";
-      userMsg.textContent = message;
+      userMsg.innerHTML = `
+        ${message}
+        <span class="timestamp">Sending...</span>
+      `;
       chatBox.appendChild(userMsg);
       chatBox.scrollTop = chatBox.scrollHeight;
       chatInput.value = "";
@@ -132,12 +137,19 @@
         if (!result.success) {
           alert("Message failed: " + result.message);
         } else {
-          fetchMessages(); 
+          fetchMessages();
         }
       } catch (error) {
         alert("Failed to send message: " + error.message);
       }
     }
+
+    // Refresh messages every 3 seconds
+    setInterval(() => {
+      if (receiverPhoneInput.value.trim()) {
+        fetchMessages();
+      }
+    }, 3000);
 
     sendBtn.addEventListener("click", sendMessage);
     chatInput.addEventListener("keypress", (e) => {
