@@ -16,7 +16,7 @@
     }
     .sidebar {
       width: 30%;
-      background: #2d3436;
+      background: #020aab;
       color: white;
       padding: 1rem;
       overflow-y: auto;
@@ -181,7 +181,6 @@
       if (e.key === "Enter") sendMessage();
     });
 
-    // Upload contact file (JSON only)
     contactUpload.addEventListener("change", async function () {
       const file = this.files[0];
       if (!file) return;
@@ -189,7 +188,7 @@
       const reader = new FileReader();
       reader.onload = async function (e) {
         try {
-          const contacts = JSON.parse(e.target.result); // [{ phone: "09012345678" }, ...]
+          const contacts = JSON.parse(e.target.result);
           const res = await fetch("https://shatova.onrender.com/api/shatova/V1/filter-contacts", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
