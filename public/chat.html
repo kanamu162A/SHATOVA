@@ -39,9 +39,6 @@
       border: 1px solid #ccc;
       width: 48%;
     }
-    #chatInput {
-      width: 48%;
-    }
     #sendBtn {
       padding: 0.7rem 1.2rem;
       background: #0984e3;
@@ -66,21 +63,23 @@
   <div id="chatBox"></div>
 
   <script>
-    // For demo, hardcode sender phone, or get from localStorage
     const senderPhone = localStorage.getItem("shatova_phone") || "1234567890";
-
     const receiverPhoneInput = document.getElementById("receiverPhone");
     const chatInput = document.getElementById("chatInput");
     const sendBtn = document.getElementById("sendBtn");
     const chatBox = document.getElementById("chatBox");
 
-    // Fetch messages and update chat box
     async function fetchMessages() {
       const receiverPhone = receiverPhoneInput.value.trim();
       if (!receiverPhone) return;
 
       try {
-        const res = await fetch(`/api/messages?user1=${senderPhone}&user2=${receiverPhone}`);
+        const res = await fetch(`/api/messages?user1=${encodeURIComponent(senderPhone)}&user2=${encodeURIComponent(receiverPhone)}`);
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Expected JSON response but got something else");
+        }
+
         const data = await res.json();
         if (data.success) {
           chatBox.innerHTML = "";
@@ -91,13 +90,15 @@
             chatBox.appendChild(msgDiv);
           });
           chatBox.scrollTop = chatBox.scrollHeight;
+        } else {
+          alert("Failed to load messages: " + data.message);
         }
       } catch (error) {
-        console.error("Failed to fetch messages", error);
+        console.error("Fetch error:", error);
+        alert("Error loading messages");
       }
     }
 
-    // Send message function
     async function sendMessage() {
       const message = chatInput.value.trim();
       const receiver = receiverPhoneInput.value.trim();
@@ -107,13 +108,11 @@
         return;
       }
 
-      // Show message immediately
       const userMsg = document.createElement("div");
       userMsg.className = "message self";
       userMsg.textContent = message;
       chatBox.appendChild(userMsg);
       chatBox.scrollTop = chatBox.scrollHeight;
-
       chatInput.value = "";
 
       try {
@@ -125,31 +124,27 @@
           body: JSON.stringify({
             sender_phone: senderPhone,
             receiver_phone: receiver,
-            message,
+            message: message,
           }),
         });
 
         const result = await response.json();
-
         if (!result.success) {
           alert("Message failed: " + result.message);
         } else {
-          // Refresh chat to sync messages from server
-          fetchMessages();
+          fetchMessages(); // Refresh chat to sync
         }
       } catch (error) {
         alert("Failed to send message: " + error.message);
       }
     }
 
-    // Event listeners
     sendBtn.addEventListener("click", sendMessage);
     chatInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") sendMessage();
     });
     receiverPhoneInput.addEventListener("change", fetchMessages);
 
-    // Initial fetch on load (if receiver phone exists)
     window.onload = () => {
       if (receiverPhoneInput.value.trim()) fetchMessages();
     };
