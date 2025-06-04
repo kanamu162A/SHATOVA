@@ -74,7 +74,7 @@
       if (!receiverPhone) return;
 
       try {
-        const res = await fetch(`https://shatova.onrender.com/api/shatova/V1/messages?user1=${encodeURIComponent(senderPhone)}&user2=${encodeURIComponent(receiverPhone)}`);
+        const res = await fetch(`https://shatova.onrender.com/api/shatova/V1/login?user1=${encodeURIComponent(senderPhone)}&user2=${encodeURIComponent(receiverPhone)}`);
         const contentType = res.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
           throw new Error("Expected JSON response but got something else");
@@ -116,7 +116,7 @@
       chatInput.value = "";
 
       try {
-        const response = await fetch("https://shatova.onrender.com/api/shatova/V1/api/messages", {
+        const response = await fetch("https://shatova.onrender.com/api/shatova/V1/messages/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
