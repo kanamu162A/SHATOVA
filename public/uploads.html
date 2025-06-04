@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uploads | Shatova</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f6fa;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #1e1e2f;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar h2 {
+      font-size: 1.8em;
+      margin-bottom: 30px;
+      color: #00b894;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 12px 0;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1em;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #00cec9;
+      padding-left: 8px;
+    }
+
+    .logout {
+      margin-top: auto;
+      cursor: pointer;
+      color: #d63031;
+      font-weight: bold;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      font-size: 28px;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px;
+      background-color: #0984e3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #74b9ff;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+
+      .main {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div>
+      <h2>Shatova</h2>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="chat.html">Let's Chat</a>
+      <a href="uploads.html">Uploads</a>
+      <a href="history.html">History</a>
+    </div>
+    <div class="logout" onclick="logout()">Log out</div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <h1>Upload a Product</h1>
+    <form id="uploadForm">
+      <label for="productName">Product Name</label>
+      <input type="text" id="productName" required />
+
+      <label for="category">Category</label>
+      <select id="category" required>
+        <option value="">Select Category</option>
+        <option value="clothing">Clothing</option>
+        <option value="snacks">Snacks</option>
+        <option value="food">Food</option>
+        <option value="vegetables">Vegetables</option>
+        <option value="furniture">Furniture</option>
+      </select>
+
+      <label for="price">Price (₦)</label>
+      <input type="number" id="price" required />
+
+      <label for="description">Description</label>
+      <textarea id="description" rows="4" placeholder="Enter description..."></textarea>
+
+      <label for="image">Image Upload</label>
+      <input type="file" id="image" accept="image/*" required />
+
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const token = localStorage.getItem("shatova_token");
+    if (!token) {
+      window.location.href = "/login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("shatova_token");
+      window.location.href = "/login.html";
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const productName = document.getElementById("productName").value;
+      const category = document.getElementById("category").value;
+      const price = document.getElementById("price").value;
+      const description = document.getElementById("description").value;
+      const image = document.getElementById("image").files[0];
+
+      if (!productName || !category || !price || !image) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      // Simulate form submission (later replace with fetch to backend)
+      alert(`Product "${productName}" uploaded successfully!`);
+
+      // Clear form
+      document.getElementById("uploadForm").reset();
+    });
+  </script>
+</body>
+</html>

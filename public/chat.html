@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Let's Chat | Shatova</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #1e1e2f;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar h2 {
+      font-size: 1.8em;
+      margin-bottom: 30px;
+      color: #00b894;
+    }
+
+    .sidebar a {
+      display: block;
+      margin: 12px 0;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1em;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      color: #00cec9;
+      padding-left: 8px;
+    }
+
+    .logout {
+      margin-top: auto;
+      cursor: pointer;
+      color: #d63031;
+      font-weight: bold;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .chat-box {
+      flex: 1;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .message {
+      margin-bottom: 15px;
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 15px;
+      background-color: #dff9fb;
+      align-self: flex-start;
+    }
+
+    .message.self {
+      background-color: #74b9ff;
+      color: white;
+      align-self: flex-end;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .chat-input button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #0984e3;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+
+      .main {
+        padding: 10px;
+      }
+
+      .chat-box {
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div>
+      <h2>Shatova</h2>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="chat.html">Let's Chat</a>
+      <a href="uploads.html">Uploads</a>
+      <a href="history.html">History</a>
+    </div>
+    <div class="logout" onclick="logout()">Log out</div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="chat-box" id="chatBox">
+      <!-- Messages will appear here -->
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    const token = localStorage.getItem("shatova_token");
+    if (!token) {
+      window.location.href = "/login.html";
+    }
+
+    function logout() {
+      localStorage.removeItem("shatova_token");
+      window.location.href = "/login.html";
+    }
+
+    const chatBox = document.getElementById("chatBox");
+    const chatInput = document.getElementById("chatInput");
+
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      // Add user message
+      const userMsg = document.createElement("div");
+      userMsg.className = "message self";
+      userMsg.textContent = text;
+      chatBox.appendChild(userMsg);
+
+      chatInput.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Simulated reply
+      setTimeout(() => {
+        const botMsg = document.createElement("div");
+        botMsg.className = "message";
+        botMsg.textContent = "Thanks for your message!";
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 800);
+    }
+
+    // Optional: Press Enter to send
+    chatInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -2,182 +2,158 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard | Shatova</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: 'Inter', sans-serif;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
       display: flex;
-      height: 100vh;
-      background-color: #f9fafb;
+      min-height: 100vh;
+      background-color: #f2f2f2;
     }
 
     .sidebar {
-      width: 170px;
-      background-color: #07137c;
-      color: white;
+      width: 220px;
+      background-color: #01014e;
+      color: #fff;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 1rem;
     }
 
     .sidebar h2 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-      font-style: italic;
-      text-transform: uppercase;
-      color: #ffe600;
+      font-size: 1.8em;
+      margin-bottom: 30px;
+      color: whitesmoke;
     }
 
-    .nav-link {
-      margin: 0.5rem 0;
-      cursor: pointer;
-      padding: 0.6rem;
-      border-radius: 8px;
+    .sidebar a {
+      display: block;
+      margin: 12px 0;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1em;
+      transition: 0.3s;
     }
 
-    .nav-link:hover {
-      background-color: #020727;
+    .sidebar a:hover {
+      color: #042423;
+      padding-left: 8px;
     }
 
     .logout {
-      background: #e11d48;
-      color: white;
-      padding: 0.6rem;
-      border-radius: 8px;
-      text-align: center;
+      margin-top: auto;
       cursor: pointer;
+      color: #d63031;
+      font-weight: bold;
     }
 
     .main {
       flex: 1;
-      padding: 2rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
+      padding: 40px;
     }
 
     .card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-      margin-bottom: 2rem;
+      background: #fff;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
     }
 
     .card h3 {
-      margin-top: 0;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      color: #2d3436;
     }
 
     .user-info p {
-      margin: 0.5rem 0;
+      font-size: 1.1em;
+      margin-bottom: 12px;
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 1rem;
+    .user-info strong {
+      color: #636e72;
     }
 
-    input, select, textarea {
-      padding: 0.7rem;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-family: inherit;
-      font-size: 1rem;
-      resize: none;
-    }
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
 
-    button {
-      background-color: #07137c;
-      color: white;
-      padding: 0.8rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      margin-top: 0.5rem;
-    }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+      }
 
-    #chat-box, #talk-chat-box {
-      height: 200px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 8px;
-      background: #f3f4f6;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-    }
+      .main {
+        padding: 20px;
+      }
 
-    #chat-box div, #talk-chat-box div {
-      margin-bottom: 8px;
+      .card {
+        width: 100%;
+        margin-top: 20px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <div>
       <h2>Shatova</h2>
-      <div class="nav-link">Dashboard</div>
-      <div class="nav-link">Let's Chat</div>
-      <div class="nav-link">Uploads</div>
-      <div class="nav-link">History</div>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="chat.html">Let's Chat</a>
+      <a href="uploads.html">Uploads</a>
+      <a href="history.html">History</a>
     </div>
     <div class="logout" onclick="logout()">Log out</div>
   </div>
 
+  <!-- Main Content -->
   <div class="main">
     <div class="card">
-      <h3>Welcome, <span id="userName">User</span>!</h3>
+      <h3>Welcome, <span id="userName">Loading...</span>!</h3>
       <div class="user-info">
-        <p><strong>Email:</strong> <span id="userEmail"></span></p>
-        <p><strong>Phone:</strong> <span id="userPhone"></span></p>
+        <p><strong>Email:</strong> <span id="userEmail">...</span></p>
+        <p><strong>Phone:</strong> <span id="userPhone">...</span></p>
         <p><strong>Balance:</strong> ₦<span id="userBalance">0.00</span></p>
-        <p><strong>Date Joined:</strong> <span id="created_at"></span></p>
+        <p><strong>Date Joined:</strong> <span id="created_at">...</span></p>
       </div>
-    </div>
-
-    <div class="card">
-      <h3>Let's Chat With Other Users</h3>
-      <div class="form-group">
-        <input type="text" id="receiverPhone" placeholder="Enter recipient's phone number" />
-      </div>
-      <div id="chat-box">No messages yet.</div>
-      <textarea id="chat-message" placeholder="Type your message..." rows="3"></textarea>
-      <button onclick="sendUserMessage()">Send Message</button>
-    </div>
-
-    <div class="card">
-      <h3>Upload Your Data</h3>
-      <div class="form-group">
-        <input type="text" id="uploadPhone" placeholder="Phone number" />
-        <input type="file" id="uploadFile" />
-      </div>
-      <button onclick="uploadData()">Upload</button>
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
     const token = localStorage.getItem("shatova_token");
-    if (!token) window.location.href = "/login.html";
-
-    let currentUserPhone = null;
+    if (!token) {
+      window.location.href = "/login.html";
+    }
 
     async function fetchUser() {
       try {
         const res = await fetch("https://shatova.onrender.com/api/shatova/V1/dashboard", {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         });
+
         const data = await res.json();
-        if (!data.success) throw new Error("Invalid token");
+
+        if (!data.success || !data.user) {
+          throw new Error("Invalid user data");
+        }
 
         const user = data.user;
-        currentUserPhone = user.phone;
 
         document.getElementById("userName").textContent = user.first_name;
         document.getElementById("userEmail").textContent = user.email;
@@ -185,59 +161,8 @@
         document.getElementById("userBalance").textContent = parseFloat(user.balance).toFixed(2);
         document.getElementById("created_at").textContent = new Date(user.created_at).toLocaleDateString();
       } catch (err) {
-        alert("Session expired");
+        alert("Session expired. Please log in again.");
         logout();
-      }
-    }
-
-    async function sendUserMessage() {
-      const phone = document.getElementById('receiverPhone').value.trim();
-      const message = document.getElementById('chat-message').value.trim();
-      if (!phone || !message || !currentUserPhone) return;
-
-      try {
-        const res = await fetch('https://shatova.onrender.com/api/talk/send-message', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ sender_phone: currentUserPhone, receiver_phone: phone, message })
-        });
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('chat-message').value = "";
-          document.getElementById('chat-box').innerHTML += `<div>You to ${phone}: ${message}</div>`;
-        } else {
-          alert("Message failed to send.");
-        }
-      } catch (err) {
-        alert("Error sending message.");
-      }
-    }
-
-    async function uploadData() {
-      const phone = document.getElementById('uploadPhone').value.trim();
-      const fileInput = document.getElementById('uploadFile');
-      const file = fileInput.files[0];
-      if (!file || !phone) return alert("Please fill all fields");
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("phone", phone);
-
-      try {
-        const res = await fetch("https://shatova.onrender.com/api/uploads/data", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: formData
-        });
-        const data = await res.json();
-        alert(data.success ? "Upload successful" : "Upload failed");
-      } catch (err) {
-        alert("Upload error.");
       }
     }
 
@@ -246,7 +171,7 @@
       window.location.href = "/login.html";
     }
 
-    window.addEventListener('DOMContentLoaded', fetchUser);
+    fetchUser();
   </script>
 </body>
 </html>
