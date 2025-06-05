@@ -4,173 +4,152 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shatova Chat</title>
-  <link rel="stylesheet" href="style.css">
-  <style>* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #111b21;
-    color: white;
-    height: 100vh;
-  }
-  
-  .container {
-    display: flex;
-    height: 100vh;
-  }
-  
-  .sidebar {
-    width: 30%;
-    background-color: #202c33;
-    border-right: 1px solid #2a3942;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .search-box {
-    padding: 10px;
-    background-color: #111b21;
-    display: flex;
-  }
-  
-  .search-box input {
-    flex: 1;
-    padding: 8px 10px;
-    border-radius: 20px;
-    border: none;
-    background-color: #2a3942;
-    color: white;
-    margin-right: 10px;
-  }
-  
-  .search-box button {
-    background-color: #25d366;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 16px;
-    cursor: pointer;
-  }
-  
-  .chat-list {
-    flex: 1;
-    overflow-y: auto;
-  }
-  
-  .chat-item {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    cursor: pointer;
-    border-bottom: 1px solid #2a3942;
-  }
-  
-  .chat-item:hover {
-    background-color: #2a3942;
-  }
-  
-  .chat-item.active {
-    background-color: #2a3942;
-  }
-  
-  .avatar {
-    width: 40px;
-    height: 40px;
-    background-color: #25d366;
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-  }
-  
-  .chat-info h4 {
-    font-size: 16px;
-    color: #e9edef;
-  }
-  
-  .chat-info p {
-    font-size: 12px;
-    color: #8696a0;
-  }
-  
-  .chat-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: #0b141a;
-    position: relative;
-  }
-  
-  .chat-header {
-    padding: 15px;
-    background-color: #202c33;
-    border-bottom: 1px solid #2a3942;
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  .messages {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .msg {
-    max-width: 60%;
-    padding: 10px 15px;
-    margin: 8px 0;
-    border-radius: 10px;
-    font-size: 14px;
-    line-height: 1.4;
-  }
-  
-  .sent {
-    background-color: #005c4b;
-    color: white;
-    align-self: flex-end;
-  }
-  
-  .received {
-    background-color: #202c33;
-    color: white;
-    align-self: flex-start;
-  }
-  
-  .input-box {
-    display: flex;
-    padding: 10px;
-    background-color: #202c33;
-    border-top: 1px solid #2a3942;
-  }
-  
-  .input-box input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 20px;
-    background-color: #2a3942;
-    color: white;
-    margin-right: 10px;
-  }
-  
-  .input-box button {
-    background-color: #25d366;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
+  <style>
+    /* Your existing CSS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #111b21;
+      color: white;
+      height: 100vh;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 30%;
+      background-color: #202c33;
+      border-right: 1px solid #2a3942;
+      display: flex;
+      flex-direction: column;
+    }
+    .search-box {
+      padding: 10px;
+      background-color: #111b21;
+      display: flex;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 20px;
+      border: none;
+      background-color: #2a3942;
+      color: white;
+      margin-right: 10px;
+    }
+    .search-box button {
+      background-color: #25d366;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      cursor: pointer;
+      border-bottom: 1px solid #2a3942;
+    }
+    .chat-item:hover {
+      background-color: #2a3942;
+    }
+    .chat-item.active {
+      background-color: #2a3942;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background-color: #25d366;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+    .chat-info h4 {
+      font-size: 16px;
+      color: #e9edef;
+    }
+    .chat-info p {
+      font-size: 12px;
+      color: #8696a0;
+    }
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #0b141a;
+      position: relative;
+    }
+    .chat-header {
+      padding: 15px;
+      background-color: #202c33;
+      border-bottom: 1px solid #2a3942;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .msg {
+      max-width: 60%;
+      padding: 10px 15px;
+      margin: 8px 0;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .sent {
+      background-color: #005c4b;
+      color: white;
+      align-self: flex-end;
+    }
+    .received {
+      background-color: #202c33;
+      color: white;
+      align-self: flex-start;
+    }
+    .input-box {
+      display: flex;
+      padding: 10px;
+      background-color: #202c33;
+      border-top: 1px solid #2a3942;
+    }
+    .input-box input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      background-color: #2a3942;
+      color: white;
+      margin-right: 10px;
+    }
+    .input-box button {
+      background-color: #25d366;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -201,114 +180,134 @@
     </div>
   </div>
 
-  <script src="script.js">
+  <!-- Socket.IO client script -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
     const searchBtn = document.getElementById('searchBtn');
-const searchInput = document.getElementById('searchInput');
-const chatList = document.getElementById('chatList');
-const chatHeader = document.getElementById('chatHeader');
-const messagesContainer = document.getElementById('messages');
-const messageInput = document.getElementById('messageInput');
-const sendBtn = document.getElementById('sendBtn');
+    const searchInput = document.getElementById('searchInput');
+    const chatList = document.getElementById('chatList');
+    const chatHeader = document.getElementById('chatHeader');
+    const messagesContainer = document.getElementById('messages');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
 
-let currentUserPhone = prompt("Enter your phone number:");
-let currentChatPhone = null;
+    // Connect to Socket.IO server
+    const socket = io('https://shatova.onrender.com');
 
-// Fetch user's chat list
-async function fetchChatList() {
-  try {
-    const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/user-chats/${currentUserPhone}`);
-    const data = await response.json();
-    if (data.success) {
-      chatList.innerHTML = '';
-      data.chats.forEach(chat => {
-        const chatItem = document.createElement('div');
-        chatItem.classList.add('chat-item');
-        chatItem.innerHTML = `
-          <div class="avatar">${chat.chat_partner.charAt(0)}</div>
-          <div class="chat-info">
-            <h4>${chat.chat_partner}</h4>
-          </div>
-        `;
-        chatItem.addEventListener('click', () => {
-          currentChatPhone = chat.chat_partner;
-          chatHeader.textContent = `Chat with ${currentChatPhone}`;
-          fetchMessages();
-        });
-        chatList.appendChild(chatItem);
-      });
-    }
-  } catch (error) {
-    console.error("Error fetching chat list:", error);
-  }
-}
+    let currentUserPhone = prompt("Enter your phone number:");
+    let currentChatPhone = null;
 
-// Search for a user by phone number
-searchBtn.addEventListener('click', async () => {
-  const phone = searchInput.value.trim();
-  if (!phone) return;
-
-  try {
-    const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/check-user/${phone}`);
-    const data = await response.json();
-    if (data.success && data.registered) {
-      currentChatPhone = phone;
-      chatHeader.textContent = `Chat with ${currentChatPhone}`;
-      fetchMessages();
-    } else {
-      alert("User not registered.");
-    }
-  } catch (error) {
-    console.error("Error checking user:", error);
-  }
-});
-
-// Fetch messages between current user and selected chat partner
-async function fetchMessages() {
-  try {
-    const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/messages?user1=${currentUserPhone}&user2=${currentChatPhone}`);
-    const data = await response.json();
-    if (data.success) {
-      messagesContainer.innerHTML = '';
-      data.messages.forEach(msg => {
-        const msgDiv = document.createElement('div');
-        msgDiv.classList.add('msg');
-        msgDiv.classList.add(msg.sender_phone === currentUserPhone ? 'sent' : 'received');
-        msgDiv.textContent = msg.message;
-        messagesContainer.appendChild(msgDiv);
-      });
+    // Utility: Add message to message container
+    function addMessage(text, isSent) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('msg');
+      msgDiv.classList.add(isSent ? 'sent' : 'received');
+      msgDiv.textContent = text;
+      messagesContainer.appendChild(msgDiv);
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-  } catch (error) {
-    console.error("Error fetching messages:", error);
-  }
-}
 
-// Send a new message
-sendBtn.addEventListener('click', async () => {
-  const message = messageInput.value.trim();
-  if (!message || !currentChatPhone) return;
+    // Load chat list from server (fetch once, you can extend to socket later)
+    async function fetchChatList() {
+      try {
+        const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/user-chats/${currentUserPhone}`);
+        const data = await response.json();
+        if (data.success) {
+          chatList.innerHTML = '';
+          data.chats.forEach(chat => {
+            const chatItem = document.createElement('div');
+            chatItem.classList.add('chat-item');
+            chatItem.innerHTML = `
+              <div class="avatar">${chat.chat_partner.charAt(0)}</div>
+              <div class="chat-info">
+                <h4>${chat.chat_partner}</h4>
+              </div>
+            `;
+            chatItem.addEventListener('click', () => {
+              openChat(chat.chat_partner);
+            });
+            chatList.appendChild(chatItem);
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching chat list:", error);
+      }
+    }
 
-  try {
-    const response = await fetch('https://shatova.onrender.com/api/shatova/V1/send-message', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sender_phone: currentUserPhone,
-        receiver_phone: currentChatPhone,
-        message
-      })
+    // Search user by phone number
+    searchBtn.addEventListener('click', async () => {
+      const phone = searchInput.value.trim();
+      if (!phone) return;
+
+      try {
+        const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/check-user/${phone}`);
+        const data = await response.json();
+        if (data.success && data.registered) {
+          openChat(phone);
+        } else {
+          alert("User not registered.");
+        }
+      } catch (error) {
+        console.error("Error checking user:", error);
+      }
     });
-    const data = await response.json();
-    if (data.success) {
-      messageInput.value = '';
+
+    // Open a chat with a user
+    function openChat(phone) {
+      currentChatPhone = phone;
+      chatHeader.textContent = `Chat with ${currentChatPhone}`;
+      messagesContainer.innerHTML = '';
+
+      // Join socket room for these two users to receive messages in real time
+      socket.emit('joinRoom', { user1: currentUserPhone, user2: currentChatPhone });
+
+      // Fetch message history via REST API (or you can do this via socket if backend supports)
       fetchMessages();
     }
-  } catch (error) {
-    console.error("Error sending message:", error);
-  }
-});
 
-fetchChatList();
+    // Fetch message history (once)
+    async function fetchMessages() {
+      try {
+        const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/messages?user1=${currentUserPhone}&user2=${currentChatPhone}`);
+        const data = await response.json();
+        if (data.success) {
+          messagesContainer.innerHTML = '';
+          data.messages.forEach(msg => {
+            addMessage(msg.message, msg.sender_phone === currentUserPhone);
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    }
+
+    // Send message event
+    sendBtn.addEventListener('click', () => {
+      const message = messageInput.value.trim();
+      if (!message || !currentChatPhone) return;
+
+      // Emit socket event to send message
+      socket.emit('sendMessage', {
+        sender_phone: currentUserPhone,
+        receiver_phone: currentChatPhone,
+        message: message
+      });
+
+      // Show the sent message instantly
+      addMessage(message, true);
+      messageInput.value = '';
+    });
+
+    // Listen for incoming messages via socket
+    socket.on('receiveMessage', (msg) => {
+      // Only show if the message is from the current chat partner
+      if (msg.sender_phone === currentChatPhone) {
+        addMessage(msg.message, false);
+      }
+    });
+
+    // Initialize chat list
+    fetchChatList();
 
   </script>
 </body>
