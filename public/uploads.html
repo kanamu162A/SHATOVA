@@ -163,37 +163,56 @@
   </div>
 
   <!-- JavaScript -->
-  <script>
-    const token = localStorage.getItem("shatova_token");
-    if (!token) {
-      window.location.href = "/login.html";
+<script>
+  const token = localStorage.getItem("shatova_token");
+  if (!token) {
+    window.location.href = "/login.html";
+  }
+
+  function logout() {
+    localStorage.removeItem("shatova_token");
+    window.location.href = "/login.html";
+  }
+
+  document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const productName = document.getElementById("productName").value;
+    const category = document.getElementById("category").value;
+    const price = document.getElementById("price").value;
+    const description = document.getElementById("description").value;
+    const image = document.getElementById("image").files[0];
+
+    if (!productName || !category || !price || !image) {
+      return alert("Please fill in all required fields.");
     }
 
-    function logout() {
-      localStorage.removeItem("shatova_token");
-      window.location.href = "/login.html";
-    }
+    const formData = new FormData();
+    formData.append("product_name", productName);
+    formData.append("category", category);
+    formData.append("price", price);
+    formData.append("description", description);
+    formData.append("image", image);
+    formData.append("user_id", "1"); // Replace with actual user_id from login or token
 
-    document.getElementById("uploadForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:5000/api/products/upload", {
+        method: "POST",
+        body: formData
+      });
 
-      const productName = document.getElementById("productName").value;
-      const category = document.getElementById("category").value;
-      const price = document.getElementById("price").value;
-      const description = document.getElementById("description").value;
-      const image = document.getElementById("image").files[0];
-
-      if (!productName || !category || !price || !image) {
-        alert("Please fill in all required fields.");
-        return;
+      const result = await response.json();
+      if (response.ok) {
+        alert("Product uploaded successfully!");
+        document.getElementById("uploadForm").reset();
+      } else {
+        alert("Upload failed: " + result.error);
       }
-
-      // Simulate form submission (later replace with fetch to backend)
-      alert(`Product "${productName}" uploaded successfully!`);
-
-      // Clear form
-      document.getElementById("uploadForm").reset();
-    });
-  </script>
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong!");
+    }
+  });
+</script>
 </body>
 </html>
