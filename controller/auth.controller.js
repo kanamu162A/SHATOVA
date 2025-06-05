@@ -114,7 +114,8 @@ export const login = async(req,res) =>{
         const token = JWT.sign({
             id:user.id,
             role:user.role,
-            first_name:user.first_name
+            first_name:user.first_name,
+            phone:user.phone
         },SECRET_KEY,{expiresIn:"10m"});
 
         return res.status(200).json({

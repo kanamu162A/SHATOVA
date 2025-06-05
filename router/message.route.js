@@ -1,16 +1,16 @@
 import express from 'express';
-import {
-  sendMessage,
-  getMessages,
-  checkUserRegistered,
-  getUserChats
-} from '../controller/message.controller.js';
-
 const router = express.Router();
+import {
+    getUserChats,
+    checkUserExists,
+    getMessagesBetweenUsers,
+    sendMessage,
+  } from '../controller/message.controller.js';
+  
 
-router.post('/send-message', sendMessage);
-router.get('/messages', getMessages);
-router.get('/check-user/:phone', checkUserRegistered);
 router.get('/user-chats/:phone', getUserChats);
+router.get('/check-user/:phone', checkUserExists);
+router.get('/messages', getMessagesBetweenUsers);
+router.post('/send-message', sendMessage);
 
 export default router;
