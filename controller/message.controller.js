@@ -26,7 +26,7 @@ export const checkUserExists = async (req, res) => {
   const { phone } = req.params;
   try {
     const result = await pool.query(
-      'SELECT * FROM users WHERE phone = $1',
+      'SELECT * FROM auth WHERE phone = $1',
       [phone]
     );
     if (result.rows.length > 0) {
