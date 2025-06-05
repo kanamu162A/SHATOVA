@@ -3,14 +3,14 @@ import pool from '../config/database.js';
 export const sendMessage = async (req, res) => {
   const { sender_phone, receiver_phone, message } = req.body;
 
-  if (!sender_phone || !receiver_phone || !message) {
+  if (!sender_phone || !receiver_phone || !message?.trim()) {
     return res.status(400).json({ success: false, message: "Missing fields" });
   }
 
   try {
     await pool.query(
       "INSERT INTO messages (sender_phone, receiver_phone, message, timestamp) VALUES ($1, $2, $3, NOW())",
-      [sender_phone, receiver_phone, message]
+      [sender_phone, receiver_phone, message.trim()]
     );
     res.json({ success: true, message: "Message sent" });
   } catch (err) {
@@ -21,6 +21,7 @@ export const sendMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   const { user1, user2 } = req.query;
+
   if (!user1 || !user2) {
     return res.status(400).json({ success: false, message: "Missing phone numbers" });
   }
@@ -48,12 +49,8 @@ export const checkUserRegistered = async (req, res) => {
   if (!phone) return res.status(400).json({ success: false, message: "Phone number is required" });
 
   try {
-    const result = await pool.query("SELECT * FROM users WHERE phone = $1", [phone]);
-    if (result.rows.length > 0) {
-      res.json({ success: true, registered: true });
-    } else {
-      res.json({ success: true, registered: false });
-    }
+    const result = await pool.query("SELECT * FROM auth WHERE phone = $1", [phone]);
+    res.json({ success: true, registered: result.rows.length > 0 });
   } catch (err) {
     console.error("User check error:", err.message);
     res.status(500).json({ success: false, message: "Database error" });
