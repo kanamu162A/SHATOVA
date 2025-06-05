@@ -196,7 +196,7 @@
     formData.append("user_id", "1"); // Replace with actual user_id from login or token
 
     try {
-      const response = await fetch("http://localhost:5000/api/products/upload", {
+      const response = await fetch("https://shatova.onrender.com/api/shatova/V1/upload", {
         method: "POST",
         body: formData
       });

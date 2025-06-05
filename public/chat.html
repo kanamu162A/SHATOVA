@@ -216,7 +216,7 @@ let currentChatPhone = null;
 // Fetch user's chat list
 async function fetchChatList() {
   try {
-    const response = await fetch(`/api/shatova/V1/user-chats/${currentUserPhone}`);
+    const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/register/user-chats/${currentUserPhone}`);
     const data = await response.json();
     if (data.success) {
       chatList.innerHTML = '';
@@ -248,7 +248,7 @@ searchBtn.addEventListener('click', async () => {
   if (!phone) return;
 
   try {
-    const response = await fetch(`/api/shatova/V1/check-user/${phone}`);
+    const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/register/check-user/${phone}`);
     const data = await response.json();
     if (data.success && data.registered) {
       currentChatPhone = phone;
@@ -265,7 +265,7 @@ searchBtn.addEventListener('click', async () => {
 // Fetch messages between current user and selected chat partner
 async function fetchMessages() {
   try {
-    const response = await fetch(`/api/shatova/V1/messages?user1=${currentUserPhone}&user2=${currentChatPhone}`);
+    const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/register/messages?user1=${currentUserPhone}&user2=${currentChatPhone}`);
     const data = await response.json();
     if (data.success) {
       messagesContainer.innerHTML = '';
@@ -289,7 +289,7 @@ sendBtn.addEventListener('click', async () => {
   if (!message || !currentChatPhone) return;
 
   try {
-    const response = await fetch('/api/shatova/V1/send-message', {
+    const response = await fetch('https://shatova.onrender.com/api/shatova/V1/register/send-message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -308,7 +308,6 @@ sendBtn.addEventListener('click', async () => {
   }
 });
 
-// Initial fetch of chat list
 fetchChatList();
 
   </script>
