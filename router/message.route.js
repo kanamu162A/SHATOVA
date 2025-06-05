@@ -1,10 +1,16 @@
-import express from "express";
-import {  getMessages, sendMessage } from "../controller/message.controller.js";
+import express from 'express';
+import {
+  sendMessage,
+  getMessages,
+  checkUserRegistered,
+  getUserChats
+} from '../controller/message.controller.js';
 
 const router = express.Router();
 
-
-router.get("/messages", getMessages);
-router.post("/messages", sendMessage);
+router.post('/send-message', sendMessage);
+router.get('/messages', getMessages);
+router.get('/check-user/:phone', checkUserRegistered);
+router.get('/user-chats/:phone', getUserChats);
 
 export default router;
