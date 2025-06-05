@@ -1,24 +1,25 @@
 import pool from '../config/database.js';
 
 export const getUserChats = async (req, res) => {
-  const { phone } = req.params;
+  const { userPhone } = req.params;
   try {
     const result = await pool.query(
-      `
-      SELECT DISTINCT 
+      `SELECT DISTINCT
         CASE
           WHEN sender_phone = $1 THEN receiver_phone
           ELSE sender_phone
         END AS chat_partner
       FROM messages
-      WHERE sender_phone = $1 OR receiver_phone = $1
-      `,
-      [phone]
+      WHERE sender_phone = $1 OR receiver_phone = $1`,
+      [userPhone]
     );
-    res.status(200).json(result.rows);
+    res.json({
+      success: true,
+      chats: result.rows
+    });
   } catch (error) {
-    console.error('Error fetching chat users:', error.message);
-    res.status(500).json({ error: 'Server error fetching chats' });
+    console.error('Error fetching user chats:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
