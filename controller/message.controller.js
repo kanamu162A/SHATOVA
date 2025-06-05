@@ -48,7 +48,7 @@ export const getMessagesBetweenUsers = async (req, res) => {
       SELECT * FROM messages
       WHERE (sender_phone = $1 AND receiver_phone = $2)
          OR (sender_phone = $2 AND receiver_phone = $1)
-      ORDER BY created_at ASC
+      ORDER BY timestamp ASC
       `,
       [user1, user2]
     );
