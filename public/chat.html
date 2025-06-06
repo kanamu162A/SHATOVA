@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shatova Chat</title>
   <style>
-    /* Your existing CSS */
     * {
       margin: 0;
       padding: 0;
@@ -154,24 +153,19 @@
 </head>
 <body>
   <div class="container">
-    <!-- Sidebar -->
     <div class="sidebar">
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Enter phone number...">
         <button id="searchBtn">Search</button>
       </div>
       <div class="chat-list" id="chatList">
-        <!-- Chat items will be appended here -->
       </div>
     </div>
 
-    <!-- Chat Area -->
     <div class="chat-area">
       <div class="chat-header" id="chatHeader">
-        <!-- Chat header will be updated dynamically -->
       </div>
       <div class="messages" id="messages">
-        <!-- Messages will be appended here -->
       </div>
       <div class="input-box">
         <input type="text" id="messageInput" placeholder="Type a message...">
@@ -180,8 +174,7 @@
     </div>
   </div>
 
-  <!-- Socket.IO client script -->
-  <script src="/socket.io/socket.io.js"></script>
+  <script ></script>
   <script>
     const searchBtn = document.getElementById('searchBtn');
     const searchInput = document.getElementById('searchInput');
@@ -191,13 +184,11 @@
     const messageInput = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
 
-    // Connect to Socket.IO server
     const socket = io('https://shatova.onrender.com');
 
     let currentUserPhone = prompt("Enter your phone number:");
     let currentChatPhone = null;
 
-    // Utility: Add message to message container
     function addMessage(text, isSent) {
       const msgDiv = document.createElement('div');
       msgDiv.classList.add('msg');
@@ -207,7 +198,6 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    // Load chat list from server (fetch once, you can extend to socket later)
     async function fetchChatList() {
       try {
         const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/user-chats/${currentUserPhone}`);
@@ -234,7 +224,6 @@
       }
     }
 
-    // Search user by phone number
     searchBtn.addEventListener('click', async () => {
       const phone = searchInput.value.trim();
       if (!phone) return;
@@ -252,20 +241,16 @@
       }
     });
 
-    // Open a chat with a user
     function openChat(phone) {
       currentChatPhone = phone;
       chatHeader.textContent = `Chat with ${currentChatPhone}`;
       messagesContainer.innerHTML = '';
 
-      // Join socket room for these two users to receive messages in real time
       socket.emit('joinRoom', { user1: currentUserPhone, user2: currentChatPhone });
 
-      // Fetch message history via REST API (or you can do this via socket if backend supports)
       fetchMessages();
     }
 
-    // Fetch message history (once)
     async function fetchMessages() {
       try {
         const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/messages?user1=${currentUserPhone}&user2=${currentChatPhone}`);
@@ -281,33 +266,28 @@
       }
     }
 
-    // Send message event
-    sendBtn.addEventListener('click', () => {
+    sendBtn.addEventListener('click', () => {react
       const message = messageInput.value.trim();
       if (!message || !currentChatPhone) return;
 
-      // Emit socket event to send message
       socket.emit('sendMessage', {
         sender_phone: currentUserPhone,
         receiver_phone: currentChatPhone,
         message: message
       });
 
-      // Show the sent message instantly
       addMessage(message, true);
       messageInput.value = '';
     });
 
-    // Listen for incoming messages via socket
     socket.on('receiveMessage', (msg) => {
-      // Only show if the message is from the current chat partner
       if (msg.sender_phone === currentChatPhone) {
         addMessage(msg.message, false);
       }
     });
 
-    // Initialize chat list
     fetchChatList();
+
 
   </script>
 </body>
