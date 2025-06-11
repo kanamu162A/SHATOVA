@@ -107,7 +107,6 @@
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
   <div class="sidebar">
     <div>
       <h2>Shatova</h2>
@@ -119,7 +118,6 @@
     <div class="logout" onclick="logout()">Log out</div>
   </div>
 
-  <!-- Main Content -->
   <div class="main">
     <div class="card">
       <h3>Welcome, <span id="userName">Loading...</span>!</h3>
@@ -132,7 +130,6 @@
     </div>
   </div>
 
-  <!-- JavaScript -->
   <script>
     const token = localStorage.getItem("shatova_token");
     if (!token) {

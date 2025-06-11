@@ -36,5 +36,4 @@ app.use("/api/shatova/V1/", messageRoutes);
 app.listen(port, () => {
   console.log(`server running on http://localhost:${port} Successfully..`);
 });
-console.log("manneeru");
 

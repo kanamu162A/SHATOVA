@@ -162,7 +162,6 @@
     </form>
   </div>
 
-  <!-- JavaScript -->
 <script>
   const searchBtn = document.getElementById('searchBtn');
 const searchInput = document.getElementById('searchInput');
@@ -175,7 +174,6 @@ const sendBtn = document.getElementById('sendBtn');
 let currentUserPhone = prompt("Enter your phone number:");
 let currentChatPhone = null;
 
-// Fetch chat list
 async function fetchChatList() {
   const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/user-chats/${currentUserPhone}`);
   const data = await response.json();
@@ -192,14 +190,12 @@ async function fetchChatList() {
   });
 }
 
-// Open a specific chat
 async function openChat(phone) {
   currentChatPhone = phone;
   chatHeader.textContent = `Chat with ${phone}`;
   await fetchMessages();
 }
 
-// Fetch chat messages
 async function fetchMessages() {
   const response = await fetch(`https://shatova.onrender.com/api/shatova/V1/messages?user1=${currentUserPhone}&user2=${currentChatPhone}`);
   const data = await response.json();
@@ -214,7 +210,6 @@ async function fetchMessages() {
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-// Send message
 sendBtn.addEventListener('click', async () => {
   const message = messageInput.value.trim();
   if (!message || !currentChatPhone) return;
@@ -233,7 +228,6 @@ sendBtn.addEventListener('click', async () => {
   await fetchMessages();
 });
 
-// Search new chat
 searchBtn.addEventListener('click', async () => {
   const phone = searchInput.value.trim();
   if (!phone) return;
@@ -247,7 +241,6 @@ searchBtn.addEventListener('click', async () => {
   }
 });
 
-// Initialize
 fetchChatList();
 
 </script>
