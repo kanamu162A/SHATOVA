@@ -125,7 +125,7 @@
         <p><strong>Email:</strong> <span id="userEmail">...</span></p>
         <p><strong>Phone:</strong> <span id="userPhone">...</span></p>
         <p><strong>Balance:</strong> ₦<span id="userBalance">0.00</span></p>
-        <p><strong>Date Joined:</strong> <span id="created_at">...</span></p>
+        <p><strong>Date Joined:</strong> <span id="created_at">Loading...</span></p>
       </div>
     </div>
   </div>
@@ -153,23 +153,28 @@
 
         const user = data.user;
 
-        // Fill in user details
         document.getElementById("userName").textContent = user.first_name || "User";
         document.getElementById("userEmail").textContent = user.email || "N/A";
         document.getElementById("userPhone").textContent = user.phone || "N/A";
         document.getElementById("userBalance").textContent = parseFloat(user.balance || 0).toFixed(2);
 
-        // Format the created_at date
-        const createdAt = new Date(user.created_at);
-        const isValidDate = !isNaN(createdAt.getTime());
+        // Fix for created_at
+        let rawDate = user.created_at;
+        if (rawDate && typeof rawDate === "string") {
+          rawDate = rawDate.replace(" ", "T");
+          const createdAt = new Date(rawDate);
+          const isValidDate = !isNaN(createdAt.getTime());
 
-        document.getElementById("created_at").textContent = isValidDate
-          ? createdAt.toLocaleDateString("en-NG", {
-              year: "numeric",
-              month: "long",
-              day: "numeric"
-            })
-          : "Not available";
+          document.getElementById("created_at").textContent = isValidDate
+            ? createdAt.toLocaleDateString("en-NG", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+              })
+            : "Not available";
+        } else {
+          document.getElementById("created_at").textContent = "Not available";
+        }
       } catch (err) {
         console.error("Error:", err.message || err);
         alert("Session expired or data error. Please log in again.");

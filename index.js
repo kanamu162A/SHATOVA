@@ -1,14 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import http from "http";                
-import { Server } from "socket.io";   
 import auth_router from "./router/auth.router.js";
 import users_route from "./router/dashboard.router.js";
 import ResetPin from "./router/reset.route.js";
 import messageRoutes from "./router/message.route.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import productRoutes from "./router/product.router.js"
 
 dotenv.config();
 const app = express();
@@ -31,6 +30,7 @@ app.use("/api/shatova/V1/", auth_router);
 app.use("/api/shatova/V1/", users_route);
 app.use("/api/shatova/V1/", ResetPin);
 app.use("/api/shatova/V1/", messageRoutes);
+app.use("/api/shatova/V1", productRoutes);
 
 
 app.listen(port, () => {
