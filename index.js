@@ -4,7 +4,6 @@ import cors from "cors";
 import auth_router from "./router/auth.router.js";
 import users_route from "./router/dashboard.router.js";
 import ResetPin from "./router/reset.route.js";
-import messageRoutes from "./router/message.route.js";
 import path from "path";
 import { fileURLToPath } from "url";
 //import productRoutes from "./router/product.router.js"
@@ -29,7 +28,6 @@ app.use("/api/shatova/V1/", users_route);
 app.use("/api/shatova/V1/", auth_router);
 app.use("/api/shatova/V1/", users_route);
 app.use("/api/shatova/V1/", ResetPin);
-app.use("/api/shatova/V1/", messageRoutes);
 
 
 app.listen(port, () => {

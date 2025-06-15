@@ -90,8 +90,8 @@
     .services {
       display: flex;
       gap: 10px;
-      flex-wrap: wrap;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     .services button {
@@ -102,6 +102,8 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 1em;
+      flex: 1;
+      min-width: 100px;
     }
 
     .services button:hover {
@@ -178,29 +180,47 @@
       </div>
 
       <div class="services">
-        <button onclick="showSection('airtime')">Buy Airtime</button>
         <button onclick="showSection('data')">Buy Data</button>
+        <button onclick="showSection('airtime')">Buy Airtime</button>
         <button onclick="alert('More features coming soon!')">More</button>
       </div>
 
+      <!-- Buy Data Section -->
       <div id="data" class="section">
-        <h3>Buy Data</h3>
-        <select id="dataCategory" onchange="loadDataBundles()">
-          <option value="">Select Data Category</option>
-          <option value="mtn_sme">MTN SME</option>
-          <option value="mtn_cg">MTN Corporate Gifting</option>
-          <option value="mtn_weekly">MTN Weekly</option>
-        </select>
+        <div id="step1">
+          <h3>Select Network and Category</h3>
+          <select id="dataNetwork">
+            <option value="">Select Network</option>
+            <option value="mtn">MTN</option>
+          </select>
+          <select id="dataCategory">
+            <option value="">Select Category</option>
+            <option value="sme">SME</option>
+            <option value="cg">Corporate Gifting</option>
+            <option value="weekly">Weekly Bundle</option>
+            <option value="daily">Daily Bundle</option>
+            <option value="social">Social Bundle</option>
+          </select>
+          <button onclick="goToStep2()">Next</button>
+        </div>
 
-        <select id="dataPlan">
-          <option value="">Select Data Plan</option>
-        </select>
+        <div id="step2" style="display:none;">
+          <h3>Select Data Plan</h3>
+          <select id="dataPlan">
+            <option value="">Select Plan</option>
+          </select>
+          <button onclick="goToStep3()">Next</button>
+        </div>
 
-        <input type="text" id="dataPhone" placeholder="Phone Number" />
-        <button class="buy-btn" onclick="buyData()">Buy Data</button>
-        <div class="message" id="dataMessage"></div>
+        <div id="step3" style="display:none;">
+          <h3>Enter Phone Number</h3>
+          <input type="text" id="dataPhone" placeholder="Phone Number" />
+          <button class="buy-btn" onclick="buyData()">Buy Data</button>
+          <div class="message" id="dataMessage"></div>
+        </div>
       </div>
 
+      <!-- Airtime Section -->
       <div id="airtime" class="section">
         <h3>Buy Airtime</h3>
         <p>Coming soon...</p>
@@ -245,44 +265,72 @@
       document.getElementById(id).classList.add("active");
     }
 
-    function loadDataBundles() {
+    function goToStep2() {
+      const network = document.getElementById("dataNetwork").value;
       const category = document.getElementById("dataCategory").value;
       const planDropdown = document.getElementById("dataPlan");
-      planDropdown.innerHTML = `<option value="">Select Data Plan</option>`;
+
+      if (!network || !category) {
+        alert("Please select both network and category.");
+        return;
+      }
 
       const bundles = {
-        mtn_sme: [
-          { name: "500MB - ₦100", value: "500MB" },
-          { name: "1GB - ₦200", value: "1GB" },
-          { name: "2GB - ₦400", value: "2GB" }
-        ],
-        mtn_cg: [
-          { name: "1GB - ₦250", value: "1GB" },
-          { name: "2GB - ₦500", value: "2GB" }
-        ],
-        mtn_weekly: [
-          { name: "1.5GB - ₦500", value: "1.5GB" },
-          { name: "3GB - ₦1000", value: "3GB" }
-        ]
+        mtn: {
+          sme: [
+            { name: "500MB - ₦100", value: "500MB" },
+            { name: "1GB - ₦200", value: "1GB" }
+          ],
+          cg: [
+            { name: "1GB - ₦250", value: "1GB" },
+            { name: "2GB - ₦500", value: "2GB" }
+          ],
+          weekly: [
+            { name: "1.5GB - ₦500", value: "1.5GB" },
+            { name: "3GB - ₦1000", value: "3GB" }
+          ],
+          daily: [
+            { name: "250MB - ₦50", value: "250MB" }
+          ],
+          social: [
+            { name: " 500MB - ₦100", value: "500mb" }
+          ]
+        }
       };
 
-      if (bundles[category]) {
-        bundles[category].forEach(plan => {
+      planDropdown.innerHTML = `<option value="">Select Plan</option>`;
+      if (bundles[network] && bundles[network][category]) {
+        bundles[network][category].forEach(plan => {
           const option = document.createElement("option");
           option.value = plan.value;
           option.textContent = plan.name;
           planDropdown.appendChild(option);
         });
       }
+
+      document.getElementById("step1").style.display = "none";
+      document.getElementById("step2").style.display = "block";
+    }
+
+    function goToStep3() {
+      const selectedPlan = document.getElementById("dataPlan").value;
+      if (!selectedPlan) {
+        alert("Please select a data plan.");
+        return;
+      }
+
+      document.getElementById("step2").style.display = "none";
+      document.getElementById("step3").style.display = "block";
     }
 
     async function buyData() {
+      const network = document.getElementById("dataNetwork").value;
       const category = document.getElementById("dataCategory").value;
       const plan = document.getElementById("dataPlan").value;
       const phone = document.getElementById("dataPhone").value.trim();
       const message = document.getElementById("dataMessage");
 
-      if (!category || !plan || !phone) {
+      if (!network || !category || !plan || !phone) {
         message.textContent = "All fields are required.";
         message.className = "message error";
         return;
