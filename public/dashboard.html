@@ -13,9 +13,21 @@
     }
 
     body {
+      background-color: #f5f6fa;
+      color: #2f3640;
+    }
+
+    .advert-bar {
+      background-color: #ff4757;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .container {
       display: flex;
       min-height: 100vh;
-      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
     }
 
     .sidebar {
@@ -25,13 +37,11 @@
       padding: 20px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
     }
 
     .sidebar h2 {
       font-size: 1.8em;
       margin-bottom: 30px;
-      color: whitesmoke;
     }
 
     .sidebar a {
@@ -51,190 +61,256 @@
     .logout {
       margin-top: auto;
       cursor: pointer;
-      color: #d63031;
+      color: #ff6b6b;
       font-weight: bold;
     }
 
     .main {
       flex: 1;
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .card {
-      background: white;
       padding: 30px;
-      max-width: 600px;
-      width: 100%;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-      margin-bottom: 30px;
-      text-align: center;
     }
 
-    .card h3 {
-      font-size: 1.8em;
-      margin-bottom: 20px;
-      color: #2d3436;
+    .user-card {
+      background: #fff;
+      padding: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      margin-bottom: 30px;
+      max-width: 600px;
+    }
+
+    .user-card h3 {
+      margin-bottom: 10px;
     }
 
     .user-info p {
-      font-size: 1.1em;
-      margin-bottom: 12px;
+      margin: 8px 0;
     }
 
-    .user-info strong {
-      color: #636e72;
-    }
-
-    .actions {
+    .services {
       display: flex;
-      justify-content: center;
-      gap: 16px;
+      gap: 10px;
       flex-wrap: wrap;
+      margin-bottom: 20px;
     }
 
-    .actions button {
-      padding: 12px 24px;
+    .services button {
+      padding: 12px 16px;
       background-color: #070795;
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 1em;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
+      font-size: 1em;
     }
 
-    .actions button:hover {
+    .services button:hover {
       background-color: #2f2fe6;
-      transform: translateY(-2px);
     }
 
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
+    .section {
+      display: none;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
 
-      .sidebar {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-around;
-      }
+    .section.active {
+      display: block;
+    }
 
-      .main {
-        padding: 20px;
-      }
+    select, input, button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
 
-      .card {
-        width: 100%;
-      }
+    button.buy-btn {
+      background-color: #070795;
+      color: white;
+      border: none;
+    }
+
+    .message {
+      margin-top: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
     }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div>
-      <h2>Shatova</h2>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="chat.html">Talk to Us</a>
-      <a href="transfer.html">Transfer</a>
-      <a href="history.html">History</a>
-    </div>
-    <div class="logout" onclick="logout()">Log out</div>
+
+  <div class="advert-bar">
+    🎉 Welcome to Shatova! Enjoy cheap data and airtime today!
   </div>
 
-  <div class="main">
-    <!-- User Info Card -->
-    <div class="card">
-      <h3>Welcome, <span id="userName">Loading...</span>!</h3>
-      <div class="user-info">
-        <p><strong>Email:</strong> <span id="userEmail">...</span></p>
-        <p><strong>Phone:</strong> <span id="userPhone">...</span></p>
-        <p><strong>Balance:</strong> ₦<span id="userBalance">0.00</span></p>
-        <p><strong>Date Joined:</strong> <span id="created_at">Loading...</span></p>
-      </div>
+  <div class="container">
+    <div class="sidebar">
+      <h2>Shatova</h2>
+      <a href="#">Dashboard</a>
+      <a href="#">Talk to Us</a>
+      <a href="#">History</a>
+      <div class="logout" onclick="logout()">Log out</div>
     </div>
 
-    <!-- New Action Buttons Below Card -->
-    <div class="actions">
-      <button onclick="buyAirtime()">Buy Airtime</button>
-      <button onclick="buyData()">Buy Data</button>
-      <button onclick="moreOptions()">More</button>
+    <div class="main">
+      <div class="user-card">
+        <h3>Hello, <span id="userName">Loading...</span>!</h3>
+        <div class="user-info">
+          <p><strong>Email:</strong> <span id="userEmail">...</span></p>
+          <p><strong>Phone:</strong> <span id="userPhone">...</span></p>
+          <p><strong>Balance:</strong> ₦<span id="userBalance">0.00</span></p>
+          <p><strong>Date Joined:</strong> <span id="created_at">Loading...</span></p>
+        </div>
+      </div>
+
+      <div class="services">
+        <button onclick="showSection('airtime')">Buy Airtime</button>
+        <button onclick="showSection('data')">Buy Data</button>
+        <button onclick="alert('More features coming soon!')">More</button>
+      </div>
+
+      <div id="data" class="section">
+        <h3>Buy Data</h3>
+        <select id="dataCategory" onchange="loadDataBundles()">
+          <option value="">Select Data Category</option>
+          <option value="mtn_sme">MTN SME</option>
+          <option value="mtn_cg">MTN Corporate Gifting</option>
+          <option value="mtn_weekly">MTN Weekly</option>
+        </select>
+
+        <select id="dataPlan">
+          <option value="">Select Data Plan</option>
+        </select>
+
+        <input type="text" id="dataPhone" placeholder="Phone Number" />
+        <button class="buy-btn" onclick="buyData()">Buy Data</button>
+        <div class="message" id="dataMessage"></div>
+      </div>
+
+      <div id="airtime" class="section">
+        <h3>Buy Airtime</h3>
+        <p>Coming soon...</p>
+      </div>
     </div>
   </div>
 
   <script>
     const token = localStorage.getItem("shatova_token");
 
-    if (!token) {
-      window.location.href = "/login.html";
-    }
-
-    async function fetchUser() {
-      try {
-        const res = await fetch("https://shatova.onrender.com/api/shatova/V1/dashboard", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        const data = await res.json();
-
-        if (!data.success || !data.user) {
-          throw new Error("Invalid user data");
-        }
-
-        const user = data.user;
-
-        document.getElementById("userName").textContent = user.first_name || "User";
-        document.getElementById("userEmail").textContent = user.email || "N/A";
-        document.getElementById("userPhone").textContent = user.phone || "N/A";
-        document.getElementById("userBalance").textContent = parseFloat(user.balance || 0).toFixed(2);
-
-        // Format created_at date
-        let rawDate = user.created_at;
-        if (rawDate && typeof rawDate === "string") {
-          rawDate = rawDate.replace(" ", "T");
-          const createdAt = new Date(rawDate);
-          const isValidDate = !isNaN(createdAt.getTime());
-
-          document.getElementById("created_at").textContent = isValidDate
-            ? createdAt.toLocaleDateString("en-NG", {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-              })
-            : "Not available";
-        } else {
-          document.getElementById("created_at").textContent = "Not available";
-        }
-      } catch (err) {
-        console.error("Error:", err.message || err);
-        alert("Session expired or data error. Please log in again.");
-        logout();
-      }
-    }
+    if (!token) window.location.href = "/login.html";
 
     function logout() {
       localStorage.removeItem("shatova_token");
       window.location.href = "/login.html";
     }
 
-    function buyAirtime() {
-      window.location.href = "/buy-airtime.html";
-    }
+    async function fetchUser() {
+      const res = await fetch("https://shatova.onrender.com/api/shatova/V1/dashboard", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-    function buyData() {
-      window.location.href = "/buy-data.html";
-    }
+      const data = await res.json();
+      if (!data.success || !data.user) return logout();
 
-    function moreOptions() {
-      alert("More services coming soon...");
+      const user = data.user;
+      document.getElementById("userName").textContent = user.first_name || "User";
+      document.getElementById("userEmail").textContent = user.email;
+      document.getElementById("userPhone").textContent = user.phone;
+      document.getElementById("userBalance").textContent = parseFloat(user.balance || 0).toFixed(2);
+
+      const date = new Date(user.created_at.replace(" ", "T"));
+      document.getElementById("created_at").textContent = !isNaN(date)
+        ? date.toLocaleDateString("en-NG", { year: "numeric", month: "long", day: "numeric" })
+        : "Not available";
     }
 
     fetchUser();
+
+    function showSection(id) {
+      document.querySelectorAll(".section").forEach(el => el.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function loadDataBundles() {
+      const category = document.getElementById("dataCategory").value;
+      const planDropdown = document.getElementById("dataPlan");
+      planDropdown.innerHTML = `<option value="">Select Data Plan</option>`;
+
+      const bundles = {
+        mtn_sme: [
+          { name: "500MB - ₦100", value: "500MB" },
+          { name: "1GB - ₦200", value: "1GB" },
+          { name: "2GB - ₦400", value: "2GB" }
+        ],
+        mtn_cg: [
+          { name: "1GB - ₦250", value: "1GB" },
+          { name: "2GB - ₦500", value: "2GB" }
+        ],
+        mtn_weekly: [
+          { name: "1.5GB - ₦500", value: "1.5GB" },
+          { name: "3GB - ₦1000", value: "3GB" }
+        ]
+      };
+
+      if (bundles[category]) {
+        bundles[category].forEach(plan => {
+          const option = document.createElement("option");
+          option.value = plan.value;
+          option.textContent = plan.name;
+          planDropdown.appendChild(option);
+        });
+      }
+    }
+
+    async function buyData() {
+      const category = document.getElementById("dataCategory").value;
+      const plan = document.getElementById("dataPlan").value;
+      const phone = document.getElementById("dataPhone").value.trim();
+      const message = document.getElementById("dataMessage");
+
+      if (!category || !plan || !phone) {
+        message.textContent = "All fields are required.";
+        message.className = "message error";
+        return;
+      }
+
+      try {
+        const res = await fetch("https://shatova.onrender.com/api/shatova/V1/data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ network: category, plan, phone })
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+          message.textContent = "Data purchase successful!";
+          message.className = "message success";
+        } else {
+          throw new Error(result.message || "Failed to buy data.");
+        }
+      } catch (err) {
+        message.textContent = err.message;
+        message.className = "message error";
+      }
+    }
   </script>
 </body>
 </html>
