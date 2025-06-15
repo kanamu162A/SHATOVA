@@ -30,7 +30,6 @@ app.use("/api/shatova/V1/", auth_router);
 app.use("/api/shatova/V1/", users_route);
 app.use("/api/shatova/V1/", ResetPin);
 app.use("/api/shatova/V1/", messageRoutes);
-//app.use("/api/shatova/V1", productRoutes);
 
 
 app.listen(port, () => {
