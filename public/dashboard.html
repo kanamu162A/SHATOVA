@@ -15,7 +15,7 @@
     body {
       display: flex;
       min-height: 100vh;
-      background-color: #f2f2f2;
+      background: linear-gradient(to right, #f5f7fa, #c3cfe2);
     }
 
     .sidebar {
@@ -58,46 +58,20 @@
     .main {
       flex: 1;
       padding: 40px;
-    }
-
-    .actions {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 30px;
-    }
-
-    .actions input {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      min-width: 200px;
-      font-size: 1em;
-    }
-
-    .actions button {
-      padding: 10px 16px;
-      background-color: #070795;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: background-color 0.3s ease;
-    }
-
-    .actions button:hover {
-      background-color: #2f2fe6;
+      flex-direction: column;
+      align-items: center;
     }
 
     .card {
-      background: #fff;
+      background: white;
       padding: 30px;
       max-width: 600px;
-      margin: auto;
+      width: 100%;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      text-align: center;
     }
 
     .card h3 {
@@ -113,6 +87,29 @@
 
     .user-info strong {
       color: #636e72;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .actions button {
+      padding: 12px 24px;
+      background-color: #070795;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .actions button:hover {
+      background-color: #2f2fe6;
+      transform: translateY(-2px);
     }
 
     @media (max-width: 768px) {
@@ -132,7 +129,6 @@
 
       .card {
         width: 100%;
-        margin-top: 20px;
       }
     }
   </style>
@@ -143,22 +139,13 @@
       <h2>Shatova</h2>
       <a href="dashboard.html">Dashboard</a>
       <a href="chat.html">Talk to Us</a>
-      <a href="uploads.html">Transfer</a>
+      <a href="transfer.html">Transfer</a>
       <a href="history.html">History</a>
     </div>
     <div class="logout" onclick="logout()">Log out</div>
   </div>
 
   <div class="main">
-    <!-- New Action Buttons Section -->
-    <div class="actions">
-      <input type="text" id="searchPhone" placeholder="Enter phone to transfer" />
-      <button onclick="searchAndTransfer()">Transfer</button>
-      <button onclick="buyAirtime()">Buy Airtime</button>
-      <button onclick="buyData()">Buy Data</button>
-      <button onclick="moreOptions()">More</button>
-    </div>
-
     <!-- User Info Card -->
     <div class="card">
       <h3>Welcome, <span id="userName">Loading...</span>!</h3>
@@ -168,6 +155,13 @@
         <p><strong>Balance:</strong> ₦<span id="userBalance">0.00</span></p>
         <p><strong>Date Joined:</strong> <span id="created_at">Loading...</span></p>
       </div>
+    </div>
+
+    <!-- New Action Buttons Below Card -->
+    <div class="actions">
+      <button onclick="buyAirtime()">Buy Airtime</button>
+      <button onclick="buyData()">Buy Data</button>
+      <button onclick="moreOptions()">More</button>
     </div>
   </div>
 
@@ -228,29 +222,16 @@
       window.location.href = "/login.html";
     }
 
-    function searchAndTransfer() {
-      const phone = document.getElementById("searchPhone").value.trim();
-      if (!phone) {
-        alert("Please enter a phone number to search.");
-        return;
-      }
-
-      alert("Searching for user with phone: " + phone);
-      // window.location.href = `/transfer.html?phone=${phone}`;
-    }
-
     function buyAirtime() {
-      alert("Redirecting to Buy Airtime...");
-      // window.location.href = "/buy-airtime.html";
+      window.location.href = "/buy-airtime.html";
     }
 
     function buyData() {
-      alert("Redirecting to Buy Data...");
-      // window.location.href = "/buy-data.html";
+      window.location.href = "/buy-data.html";
     }
 
     function moreOptions() {
-      alert("More options coming soon...");
+      alert("More services coming soon...");
     }
 
     fetchUser();
