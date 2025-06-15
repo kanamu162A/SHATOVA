@@ -7,7 +7,7 @@ import ResetPin from "./router/reset.route.js";
 import messageRoutes from "./router/message.route.js";
 import path from "path";
 import { fileURLToPath } from "url";
-import productRoutes from "./router/product.router.js"
+//import productRoutes from "./router/product.router.js"
 
 dotenv.config();
 const app = express();
@@ -30,7 +30,7 @@ app.use("/api/shatova/V1/", auth_router);
 app.use("/api/shatova/V1/", users_route);
 app.use("/api/shatova/V1/", ResetPin);
 app.use("/api/shatova/V1/", messageRoutes);
-app.use("/api/shatova/V1", productRoutes);
+//app.use("/api/shatova/V1", productRoutes);
 
 
 app.listen(port, () => {

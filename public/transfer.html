@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transfer | Shatova</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .transfer-box {
+      background: white;
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .transfer-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #070795;
+    }
+
+    .transfer-box input, .transfer-box textarea, .transfer-box button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .transfer-box button {
+      background-color: #070795;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .transfer-box button:hover {
+      background-color: #2f2fe6;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="transfer-box">
+    <h2>Wallet Transfer</h2>
+    <input type="text" id="recipientPhone" placeholder="Recipient Phone Number" />
+    <input type="number" id="amount" placeholder="Amount (₦)" />
+    <textarea id="description" placeholder="Description (optional)"></textarea>
+    <button onclick="submitTransfer()">Send Money</button>
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("shatova_token");
+    const apiURL = "https://shatova.onrender.com/api/shatova/V1/transfer"; // Update with your actual endpoint
+
+    if (!token) {
+      window.location.href = "/login.html";
+    }
+
+    async function submitTransfer() {
+      const phone = document.getElementById("recipientPhone").value.trim();
+      const amount = document.getElementById("amount").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const messageBox = document.getElementById("message");
+
+      if (!phone || !amount) {
+        messageBox.textContent = "Phone number and amount are required.";
+        messageBox.className = "message error";
+        return;
+      }
+
+      try {
+        const res = await fetch(apiURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            phone,
+            amount,
+            description
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          messageBox.textContent = "Transfer successful!";
+          messageBox.className = "message success";
+        } else {
+          throw new Error(data.message || "Transfer failed.");
+        }
+      } catch (err) {
+        messageBox.textContent = err.message || "An error occurred.";
+        messageBox.className = "message error";
+      }
+    }
+  </script>
+
+</body>
+</html>

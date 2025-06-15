@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buy Airtime | Shatova</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .airtime-box {
+      background: white;
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .airtime-box h2 {
+      text-align: center;
+      color: #070795;
+      margin-bottom: 20px;
+    }
+
+    .airtime-box input,
+    .airtime-box select,
+    .airtime-box button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .airtime-box button {
+      background-color: #070795;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .airtime-box button:hover {
+      background-color: #1f1fe5;
+    }
+
+    .message {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="airtime-box">
+    <h2>Buy Airtime</h2>
+    <input type="text" id="airtimePhone" placeholder="Phone Number" />
+    <select id="network">
+      <option value="">Select Network</option>
+      <option value="mtn">MTN</option>
+      <option value="glo">Glo</option>
+      <option value="airtel">Airtel</option>
+      <option value="9mobile">9mobile</option>
+    </select>
+    <input type="number" id="airtimeAmount" placeholder="Amount (₦)" />
+    <button onclick="buyAirtime()">Buy Now</button>
+    <div class="message" id="airtimeMessage"></div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("shatova_token");
+    const apiURL = "https://shatova.onrender.com/api/shatova/V1/airtime"; // Update with actual endpoint
+
+    if (!token) {
+      window.location.href = "/login.html";
+    }
+
+    async function buyAirtime() {
+      const phone = document.getElementById("airtimePhone").value.trim();
+      const network = document.getElementById("network").value;
+      const amount = document.getElementById("airtimeAmount").value.trim();
+      const messageBox = document.getElementById("airtimeMessage");
+
+      if (!phone || !network || !amount) {
+        messageBox.textContent = "All fields are required.";
+        messageBox.className = "message error";
+        return;
+      }
+
+      try {
+        const res = await fetch(apiURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            phone,
+            network,
+            amount
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          messageBox.textContent = "Airtime purchase successful!";
+          messageBox.className = "message success";
+        } else {
+          throw new Error(data.message || "Airtime purchase failed.");
+        }
+      } catch (err) {
+        messageBox.textContent = err.message || "Something went wrong.";
+        messageBox.className = "message error";
+      }
+    }
+  </script>
+
+</body>
+</html>

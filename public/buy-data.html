@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buy Data | Shatova</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .data-box {
+      background: white;
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .data-box h2 {
+      text-align: center;
+      color: #070795;
+      margin-bottom: 20px;
+    }
+
+    .data-box input,
+    .data-box select,
+    .data-box button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .data-box button {
+      background-color: #070795;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .data-box button:hover {
+      background-color: #1f1fe5;
+    }
+
+    .message {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="data-box">
+    <h2>Buy Data</h2>
+    <input type="text" id="dataPhone" placeholder="Phone Number" />
+    <select id="dataNetwork">
+      <option value="">Select Network</option>
+      <option value="mtn">MTN</option>
+      <option value="glo">Glo</option>
+      <option value="airtel">Airtel</option>
+      <option value="9mobile">9mobile</option>
+    </select>
+    <select id="dataPlan">
+      <option value="">Select Data Plan</option>
+      <option value="500MB">500MB - ₦100</option>
+      <option value="1GB">1GB - ₦200</option>
+      <option value="2GB">2GB - ₦500</option>
+      <option value="5GB">5GB - ₦1200</option>
+    </select>
+    <button onclick="buyData()">Buy Now</button>
+    <div class="message" id="dataMessage"></div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("shatova_token");
+    const apiURL = "https://shatova.onrender.com/api/shatova/V1/data"; // Update with your actual data endpoint
+
+    if (!token) {
+      window.location.href = "/login.html";
+    }
+
+    async function buyData() {
+      const phone = document.getElementById("dataPhone").value.trim();
+      const network = document.getElementById("dataNetwork").value;
+      const plan = document.getElementById("dataPlan").value;
+      const messageBox = document.getElementById("dataMessage");
+
+      if (!phone || !network || !plan) {
+        messageBox.textContent = "All fields are required.";
+        messageBox.className = "message error";
+        return;
+      }
+
+      try {
+        const res = await fetch(apiURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            phone,
+            network,
+            plan
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          messageBox.textContent = "Data purchase successful!";
+          messageBox.className = "message success";
+        } else {
+          throw new Error(data.message || "Data purchase failed.");
+        }
+      } catch (err) {
+        messageBox.textContent = err.message || "Something went wrong.";
+        messageBox.className = "message error";
+      }
+    }
+  </script>
+
+</body>
+</html>
