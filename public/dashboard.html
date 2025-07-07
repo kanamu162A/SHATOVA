@@ -13,30 +13,40 @@
     }
 
     body {
-      background-color: #f5f6fa;
+      background: linear-gradient(to left,lightblue,black,lightblue);
       color: #2f3640;
+      height: 100vh;
     }
 
     .advert-bar {
-      background-color: #ff4757;
-      color: white;
+      background-color: #d1cccc;
+      color: rgb(14, 13, 13);
       padding: 10px 20px;
       text-align: center;
       font-weight: bold;
+      height: 100px;
+      margin-left: 230px;
+      border-radius: 10px;
+      width: 70%;
+      margin-top: 20px;
     }
 
     .container {
       display: flex;
       min-height: 100vh;
+      margin: 0;
+      padding: 15px;
+      margin: 50px;
     }
 
     .sidebar {
       width: 220px;
-      background-color: #070795;
+      background-color: #010124;
       color: #fff;
       padding: 20px;
       display: flex;
       flex-direction: column;
+      border-radius: 20px;
     }
 
     .sidebar h2 {
@@ -71,12 +81,14 @@
     }
 
     .user-card {
-      background: #fff;
+      background: #bbb9b9;
       padding: 25px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       border-radius: 10px;
       margin-bottom: 30px;
-      max-width: 600px;
+      max-width: 650px;
+      margin-left: 235px;
+      height: 40%;
     }
 
     .user-card h3 {
@@ -96,18 +108,20 @@
 
     .services button {
       padding: 12px 16px;
-      background-color: #070795;
-      color: white;
+      background-color: #adadb1;
+      color: black;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 1em;
       flex: 1;
       min-width: 100px;
+      height: 50px;
+      
     }
 
     .services button:hover {
-      background-color: #2f2fe6;
+      background-color: #595981;
     }
 
     .section {
@@ -192,6 +206,10 @@
           <select id="dataNetwork">
             <option value="">Select Network</option>
             <option value="mtn">MTN</option>
+            <option value="airtel">Airtel</option>
+            <option value="mtn">GLO</option>
+            <option value="9mobile">9MOBILE</option>
+
           </select>
           <select id="dataCategory">
             <option value="">Select Category</option>
@@ -231,7 +249,7 @@
   <script>
     const token = localStorage.getItem("shatova_token");
 
-    if (!token) window.location.href = "/login.html";
+  //  if (!token) window.location.href = "/login.html";
 
     function logout() {
       localStorage.removeItem("shatova_token");
@@ -240,11 +258,11 @@
 
     async function fetchUser() {
       const res = await fetch("https://shatova.onrender.com/api/shatova/V1/dashboard", {
-        headers: { Authorization: `Bearer ${token}` }
+       headers: { Authorization: `Bearer ${token}` }
       });
 
       const data = await res.json();
-      if (!data.success || !data.user) return logout();
+      if (!data.success || !data.user) return 
 
       const user = data.user;
       document.getElementById("userName").textContent = user.first_name || "User";
